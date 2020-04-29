@@ -11,13 +11,13 @@ export class AuthService {
 
     async validateUser(username: string, pass: string): Promise<any> {
 
-        const userByName = await this.usersService.findByUser(username);
+        const user = await this.usersService.findByUser(username);
         
-        if(!userByName) {
+        if(!user) {
             throw new UnauthorizedException({ statusCode: 401, message: 'Usuário inexistente.', title: 'Dados Inválidos.', type: 'error' });
         }
 
-        const { password, ...result } = userByName;
+        const { password, ...result } = user;
 
         if(password !== pass) {
             throw new UnauthorizedException({ statusCode: 401, message: 'Senha incorreta.', title: 'Dados Inválidos.', type: 'error' });
