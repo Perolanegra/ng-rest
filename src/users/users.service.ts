@@ -46,7 +46,11 @@ export class UsersService {
     ];
   }
 
-  async findOne(username: string): Promise<User | undefined> {
+  async findByUser(username: string): Promise<User | undefined> {
     return this.users.find(user => user.username === username);
+  }
+
+  async findByPass(password: string): Promise<User | undefined> {
+    return this.users.find(user => user.password === password);
   }
 }

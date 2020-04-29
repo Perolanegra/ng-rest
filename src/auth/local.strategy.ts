@@ -19,9 +19,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
         try {
             user = await authService.validateUser(username, password);
-            if (!user) {
-                throw new UnauthorizedException({ statusCode: 401, message: 'Usuário ou senha inválida.' });
-            }
         } catch (error) {
             throw error;
         }
