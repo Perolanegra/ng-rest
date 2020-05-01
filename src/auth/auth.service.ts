@@ -1,10 +1,10 @@
 
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { UsersService } from 'src/user/users.service';
 
 @Injectable()
-export class AuthService {
+export class AuthService { // Service é o cara q se comunica com o banco (queries, etc);
     constructor(
     private usersService: UsersService,
     private jwtService: JwtService) { }
@@ -12,6 +12,7 @@ export class AuthService {
     async validateUser(username: string, pass: string): Promise<any> {
 
         const user = await this.usersService.findByUser(username);
+        
         
         if(!user) {
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
