@@ -14,13 +14,15 @@ export class AuthService {
         const user = await this.usersService.findByUser(username);
         
         if(!user) {
-            throw new UnauthorizedException({ statusCode: 401, message: 'Usuário inexistente.', title: 'Dados Inválidos.', type: 'error' });
+            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+            throw new UnauthorizedException({ statusCode: 401, message: 'Usuário inexistente.', title: 'Dados Inválidos.', type: 'error', style });
         }
 
         const { password, ...result } = user;
 
         if(password !== pass) {
-            throw new UnauthorizedException({ statusCode: 401, message: 'Senha incorreta.', title: 'Dados Inválidos.', type: 'error' });
+            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+            throw new UnauthorizedException({ statusCode: 401, message: 'Senha incorreta. Tente novamente ou clique em "Esqueceu a senha?" para redefini-la.', title: 'Dados Inválidos.', type: 'error', style });
         }
 
         return result;
