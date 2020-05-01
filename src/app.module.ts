@@ -3,7 +3,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './user/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user/user.entity';
 
 @Module({
   imports: [
@@ -16,9 +15,9 @@ import { User } from './user/user.entity';
       username: 'ng',
       password: '1061043$',
       database: 'ng_ba',
-      entities: [User],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
-      autoLoadEntities: true,
+      // autoLoadEntities: true,
     }),
   ],
   providers: [AppService],

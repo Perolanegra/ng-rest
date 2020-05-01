@@ -13,7 +13,8 @@ export class AuthService { // Service é o cara q se comunica com o banco (queri
 
         const user = await this.usersService.findByUser(username);
         
-        
+        console.log('user: ', user)
+
         if(!user) {
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
             throw new UnauthorizedException({ statusCode: 401, message: 'Usuário inexistente.', title: 'Dados Inválidos.', type: 'error', style });

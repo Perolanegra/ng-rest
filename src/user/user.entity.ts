@@ -5,45 +5,45 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 25, unique: true })
+  @Column()
   username: string;
 
-  @Column({ length: 100 })
+  @Column()
   password: string;
 
-  @Column({ default: 4 })
+  @Column()
   id_nivel: number;
 
-  @Column({ length: 50 })
+  @Column()
   name: string;
 
-  @Column({ length: 75 })
+  @Column()
   lastName: string;
 
-  @Column({ length: 175 })
+  @Column()
   statusMsg: string;
 
-  @Column({ length: 3 })
+  @Column()
   ddd: string;
 
-  @Column({ length: 20 })
+  @Column()
   phone: string;
 
-  @Column({ unique: true, length: 250 })
+  @Column()
   email: string;
 
-  @Column({ default: '' })
+  @Column()
   photoURL: string;
 
   @Column()
-  birthDate: Date;
+  birthDate: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @Column({ type: 'timestamp' })
   created_at: Timestamp;
 
-  @Column({ type: "timestamp", default: null })
-  deleted_at: Timestamp;
+  @Column()
+  deleted_at: string;
 
-  @Column({ type: "timestamp", default: null })
-  updated_at: Timestamp;
+  @Column()
+  updated_at: string;
 }
