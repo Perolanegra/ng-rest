@@ -45,9 +45,9 @@ export class AuthService { // Service é o cara q se comunica com o banco (queri
                 throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
             }
     
-            const { email, password, username } = user;
+            const { email, username, name } = user;
     
-            const responseMail = await this.ngMailer.sendPasswordEmail({ email, username, password });
+            const responseMail = await this.ngMailer.sendPasswordEmail({ email, username });
             console.log('response: ', responseMail);
         } catch (error) {
             throw error;
