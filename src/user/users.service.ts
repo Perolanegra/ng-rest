@@ -35,8 +35,7 @@ export class UsersService {
   // }
 
   async findByUser(username: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { id: 1 } });
-    // return this.users.find(user => user.username === username);
+    return this.usersRepository.findOne({ where: { username: username } });
   }
 
   async findByPass(password: string): Promise<User | undefined> {
