@@ -2,25 +2,25 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/users.service';
+import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
 
 @Injectable()
 export class AuthService { // Service é o cara q se comunica com o banco (queries, etc);
     constructor(
     private usersService: UsersService,
+    private ngMailer: NgMailerService,
     private jwtService: JwtService) { }
 
     async validateUser(username: string, pass: string): Promise<any> {
 
         const user = await this.usersService.findByUser(username);
         
-        console.log('user: ', user)
-
         if(!user) {
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
             throw new UnauthorizedException({ statusCode: 401, message: 'Usuário inexistente.', title: 'Dados Inválidos.', type: 'error', style });
         }
 
-        const { password, ...result } = user;
+        const { password, id_nivel, created_at, updated_at, deleted_at, ...result } = user;
 
         if(password !== pass) {
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
@@ -34,5 +34,24 @@ export class AuthService { // Service é o cara q se comunica com o banco (queri
         return {
             access_token: this.jwtService.sign(user),
         };
+    }
+
+    async sendCredentialsEmail(payload) {
+        try {
+            const user = await this.usersService.findByUsernameOrEmail(payload);
+            
+            if(!user) {
+                const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+                throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
+            }
+    
+            const { email, password, username } = user;
+    
+            const responseMail = await this.ngMailer.sendPasswordEmail({ email, username, password });
+            console.log('response: ', responseMail);
+        } catch (error) {
+            throw error;
+        }
+
     }
 }

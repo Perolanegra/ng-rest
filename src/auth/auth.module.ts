@@ -7,9 +7,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from 'src/auth.controller';
+import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
 
 @Module({
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, NgMailerService],
   controllers: [AuthController],
   imports: [
     UsersModule, 

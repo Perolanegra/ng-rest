@@ -54,6 +54,12 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
+  async findByUsernameOrEmail(payload: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ 
+      where: `username = '${payload.toLowerCase()}' or email = '${payload.toLowerCase()}'`  
+    });
+  }
+
   // async getUser(_id: number): Promise<User[]> {
   //   return await this.usersRepository.find({
   //     select: ["fullName", "birthday", "isActive"],
@@ -64,4 +70,6 @@ export class UsersService {
   // const qb = await getRepository(ArticleEntity)
   //     .createQueryBuilder('article')
   //     .leftJoinAndSelect('article.author', 'author');
+
+  // User.findOneAndUpdate({ _id: userId }, { password: hash })
 }
