@@ -5,45 +5,48 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: '' })
   username: string;
 
-  @Column()
+  @Column({ default: '' })
   password: string;
 
-  @Column()
+  @Column({ default: 4 })
   id_nivel: number;
 
-  @Column()
+  @Column({ default: '' })
   name: string;
 
-  @Column()
+  @Column({ default: '' })
   lastName: string;
 
-  @Column()
+  @Column({ default: '' })
   statusMsg: string;
 
-  @Column()
+  @Column({ default: '' })
   ddd: string;
 
-  @Column()
+  @Column({ default: '' })
   phone: string;
 
-  @Column()
+  @Column({ default: '' })
   email: string;
 
-  @Column()
+  @Column({ default: '' })
   photoURL: string;
 
-  @Column()
+  @Column({ default: '' })
   birthDate: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', default: () => "current_timestamp" })
   created_at: Timestamp;
 
-  @Column()
+  @Column({ default: '' })
   deleted_at: string;
 
-  @Column()
+  @Column({ default: '' })
   updated_at: string;
+
+  @Column({ default: 0 })
+  hasForgotPass: number;
 }

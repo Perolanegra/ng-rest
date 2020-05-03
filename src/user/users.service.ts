@@ -60,6 +60,18 @@ export class UsersService {
     });
   }
 
+  async setForgotPass(id: number, payload: any): Promise<User | undefined> {
+    return this.updateUser(id, payload);
+  }
+
+  async updateUser(id: number, payload): Promise<User> { // nao funciona
+    let user = await this.usersRepository.findOne(id);
+     const { hasForgotPass } = user;
+
+    let updated = Object.assign({hasForgotPass}, payload);
+    return await this.usersRepository.save(updated);
+  }
+
   // async getUser(_id: number): Promise<User[]> {
   //   return await this.usersRepository.find({
   //     select: ["fullName", "birthday", "isActive"],

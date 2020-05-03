@@ -5,14 +5,14 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class NgMailerService {
     constructor(private readonly mailerService: MailerService) { }
 
-    public async sendPasswordEmail(payload: { email: string, username: string }): Promise<any> {
+    public async sendPasswordEmail(payload: { email: string }): Promise<any> {
         return this.mailerService.sendMail(
             {
                 to: payload.email,
                 from: 'ngba@devbaiano.com',
                 subject: 'Recuperação credenciais ng-forum',
                 template: 'index',
-                context: payload
+                // context: payload
             }
         );
     }
