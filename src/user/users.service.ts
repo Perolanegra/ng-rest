@@ -1,8 +1,14 @@
 
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository, Connection, UpdateResult } from 'typeorm';
+import { Repository, getConnection, QueryRunner, EntityManager, TransactionManager, Connection } from 'typeorm';
+
+
+
+
+// establish real database connection using our new query runner
+
 
 @Injectable()
 export class UsersService {
@@ -11,28 +17,11 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private connection: Connection
+    @TransactionManager() public manager: EntityManager,
+    @InjectConnection()
+    private readonly connection: Connection
   ) {
   }
-
-  // async createMany(users: User[]) {
-  //   const queryRunner = this.connection.createQueryRunner();
-
-  //   await queryRunner.connect();
-  //   await queryRunner.startTransaction();
-  //   try {
-  //     await queryRunner.manager.save(users[0]);
-  //     await queryRunner.manager.save(users[1]);
-
-  //     await queryRunner.commitTransaction();
-  //   } catch (err) {
-  //     // since we have errors lets rollback the changes we made
-  //     await queryRunner.rollbackTransaction();
-  //   } finally {
-  //     // you need to release a queryRunner which was manually instantiated
-  //     await queryRunner.release();
-  //   }
-  // }
 
   async findByUser(username: string): Promise<User | undefined> {
     return this.usersRepository.findOne({ where: { username: username } });
@@ -55,30 +44,43 @@ export class UsersService {
   }
 
   async findByUsernameOrEmail(payload: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ 
-      where: `username = '${payload.toLowerCase()}' or email = '${payload.toLowerCase()}'`  
+    return this.usersRepository.findOne({
+      where: `username = '${payload.toLowerCase()}' or email = '${payload.toLowerCase()}'`
     });
   }
 
-  async setForgotPass(id: number, payload: any): Promise<UpdateResult | undefined> {
-    return await this.usersRepository.update(
-      { id: id },
-      payload
-    );
+  async setForgotPass(id: number, payload: any): Promise<boolean | undefined> { // isso funciona
+    
+    const queryRunner = this.connection.createQueryRunner();
+    
+    // establish real database connection using our new query runner
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.query(`UPDATE user SET hasForgotPass = '${payload}' WHERE id = ${id};`);
+      throw new Error('teste');
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      // since we have errors lets rollback changes we made
+      queryRunner.rollbackTransaction();
+      throw new BadRequestException('Failed Transaction. Rolling back.');
+
+    } finally {
+      // you need to release query runner which is manually created:
+      queryRunner.release();
+    }
+
+    return true;
   }
 
- 
+  async create(
+    id: number, payload: string
+  ) {
+     await this.manager.update(User, id, {hasForgotPass: payload});
+     throw new Error ( 'wrong') 
+   
+    return 'Creating Success';
+  }
 
-  // async getUser(_id: number): Promise<User[]> {
-  //   return await this.usersRepository.find({
-  //     select: ["fullName", "birthday", "isActive"],
-  //     where: [{ "id": _id }]
-  //   });
-  // }
-
-  // const qb = await getRepository(ArticleEntity)
-  //     .createQueryBuilder('article')
-  //     .leftJoinAndSelect('article.author', 'author');
-
-  // User.findOneAndUpdate({ _id: userId }, { password: hash })
 }

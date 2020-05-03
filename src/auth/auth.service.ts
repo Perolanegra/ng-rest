@@ -48,13 +48,14 @@ export class AuthService { // Service é o cara q se comunica com o banco (queri
 
             const { email, id } = user;
 
-            const updated: UpdateResult = await this.setForgotPass(id, '1');
+            // const resp = await this.usersService.setForgotPass(id, '1');
+            // console.log('resp: ', resp);
+            
+            // // const { changedRows } = updated.raw;
 
-            const { changedRows } = updated.raw;
-
-            if(changedRows) {
+            // if(changedRows) {
                 return await this.ngMailer.sendPasswordEmail({ email });
-            }
+            // }
 
         } catch (error) {
             throw error;
@@ -62,11 +63,5 @@ export class AuthService { // Service é o cara q se comunica com o banco (queri
 
     }
 
-    async setForgotPass(id: number, hasForgotPass: string): Promise<UpdateResult> { // fiz essa merda sem pensar
-        try {
-            return await this.usersService.setForgotPass(id, { hasForgotPass });
-        } catch (error) {
-            throw error;            
-        }
-    }
+   
 }
