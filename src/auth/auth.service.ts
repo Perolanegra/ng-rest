@@ -48,13 +48,13 @@ export class AuthService { // Service é o cara q se comunica com o banco (queri
 
             const { email, id } = user;
 
-            // const resp = await this.usersService.setForgotPass(id, '1');
-            // console.log('resp: ', resp);
+            const resp = await this.usersService.setForgotPass(id, '1');
+            console.log('resp: ', resp);
             
-            // // const { changedRows } = updated.raw;
+            // const { changedRows } = updated.raw;
 
             // if(changedRows) {
-                return await this.ngMailer.sendPasswordEmail({ email });
+            //     return await this.ngMailer.sendPasswordEmail({ email });
             // }
 
         } catch (error) {

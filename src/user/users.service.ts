@@ -50,12 +50,23 @@ export class UsersService {
   }
 
   async setForgotPass(id: number, payload: any): Promise<boolean | undefined> { // isso funciona
-    
+
     const queryRunner = this.connection.createQueryRunner();
-    
+
     // establish real database connection using our new query runner
     await queryRunner.connect();
     await queryRunner.startTransaction();
+
+    // await getConnection()
+    // .createQueryBuilder()
+    // .insert()
+    // .into(User)
+    // .values([
+    //     { firstName: "Timber", lastName: "Saw" }, 
+    //     { firstName: "Phantom", lastName: "Lancer" }
+    //  ])
+    // .execute();
+
 
     try {
       await queryRunner.query(`UPDATE user SET hasForgotPass = '${payload}' WHERE id = ${id};`);
@@ -77,9 +88,9 @@ export class UsersService {
   async create(
     id: number, payload: string
   ) {
-     await this.manager.update(User, id, {hasForgotPass: payload});
-     throw new Error ( 'wrong') 
-   
+    await this.manager.update(User, id, { hasForgotPass: payload });
+    throw new Error('wrong')
+
     return 'Creating Success';
   }
 
