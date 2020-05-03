@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/users.service';
 import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
+import { UpdateResult } from 'typeorm';
 
 @Injectable()
 export class AuthService { // Service é o cara q se comunica com o banco (queries, etc);
@@ -44,13 +45,16 @@ export class AuthService { // Service é o cara q se comunica com o banco (queri
                 const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
                 throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
             }
-    
+
             const { email, id } = user;
 
-            await this.setForgotPass(id, 1);
-            
-            return {};
-            // return await this.ngMailer.sendPasswordEmail({ email });
+            const updated: UpdateResult = await this.setForgotPass(id, '1');
+
+            const { changedRows } = updated.raw;
+
+            if(changedRows) {
+                return await this.ngMailer.sendPasswordEmail({ email });
+            }
 
         } catch (error) {
             throw error;
@@ -58,10 +62,9 @@ export class AuthService { // Service é o cara q se comunica com o banco (queri
 
     }
 
-    async setForgotPass(id: number, hasForgotPass: number) {
+    async setForgotPass(id: number, hasForgotPass: string): Promise<UpdateResult> { // fiz essa merda sem pensar
         try {
-            const user = await this.usersService.setForgotPass(id, { hasForgotPass });
-            console.log('user: ', user);
+            return await this.usersService.setForgotPass(id, { hasForgotPass });
         } catch (error) {
             throw error;            
         }

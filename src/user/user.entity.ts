@@ -47,6 +47,6 @@ export class User {
   @Column({ default: '' })
   updated_at: string;
 
-  @Column({ default: 0 })
-  hasForgotPass: number;
+  @Column({ default: '0' })
+  hasForgotPass: string;
 }

@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository, Connection } from 'typeorm';
+import { Repository, Connection, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -60,17 +60,14 @@ export class UsersService {
     });
   }
 
-  async setForgotPass(id: number, payload: any): Promise<User | undefined> {
-    return this.updateUser(id, payload);
+  async setForgotPass(id: number, payload: any): Promise<UpdateResult | undefined> {
+    return await this.usersRepository.update(
+      { id: id },
+      payload
+    );
   }
 
-  async updateUser(id: number, payload): Promise<User> { // nao funciona
-    let user = await this.usersRepository.findOne(id);
-     const { hasForgotPass } = user;
-
-    let updated = Object.assign({hasForgotPass}, payload);
-    return await this.usersRepository.save(updated);
-  }
+ 
 
   // async getUser(_id: number): Promise<User[]> {
   //   return await this.usersRepository.find({
