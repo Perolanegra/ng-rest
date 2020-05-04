@@ -1,13 +1,8 @@
 
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository, getConnection, QueryRunner, EntityManager, TransactionManager, Connection } from 'typeorm';
-
-
-
-
-// establish real database connection using our new query runner
+import { Repository, Connection, TransactionRepository, Transaction, getConnection } from 'typeorm';
 
 
 @Injectable()
@@ -15,11 +10,9 @@ export class UsersService {
   private readonly users: User[];
 
   constructor(
+    @TransactionRepository(User)
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    @TransactionManager() public manager: EntityManager,
-    @InjectConnection()
-    private readonly connection: Connection
   ) {
   }
 
@@ -49,49 +42,46 @@ export class UsersService {
     });
   }
 
-  async setForgotPass(id: number, payload: any): Promise<boolean | undefined> { // isso funciona
+  // async setForgotPass(id: number, payload: string): Promise<any | undefined> {
+  //   return await getConnection().transaction(async manager => {
+  //     manager.getRepository(User).update(
+  //       { id: id },
+  //       { hasForgotPass: payload }
+  //     );
+  //     throw new Error();
+  //   }).catch(err => {
+  //     const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+  //     throw new InternalServerErrorException({ statusCode: 500, message: 'Recarregue a página e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
+  //   });
+  // }
 
-    const queryRunner = this.connection.createQueryRunner();
+  // async setForgotPass(id: number, payload: any): Promise<any | undefined> {
+  //   const queryRunner = await this.beginTran();
+  //   let resp;
 
-    // establish real database connection using our new query runner
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+  //   try {
+  //     resp = await queryRunner.query(`UPDATE user SET hasForgotPass = '${payload}' WHERE id = ${id};`);
+  //     await queryRunner.commitTransaction();
+  //   } catch (err) {
+  //     // since we have errors lets rollback changes we made
+  //     queryRunner.rollbackTransaction();
+  //     throw new BadRequestException('Operação indisponível no momento. Recarregue a página e tente novamente.');
 
-    // await getConnection()
-    // .createQueryBuilder()
-    // .insert()
-    // .into(User)
-    // .values([
-    //     { firstName: "Timber", lastName: "Saw" }, 
-    //     { firstName: "Phantom", lastName: "Lancer" }
-    //  ])
-    // .execute();
+  //   } finally {
+  //     queryRunner.release();
+  //   }
 
+  //   return resp;
+  // }
 
-    try {
-      await queryRunner.query(`UPDATE user SET hasForgotPass = '${payload}' WHERE id = ${id};`);
-      throw new Error('teste');
-      await queryRunner.commitTransaction();
-    } catch (err) {
-      // since we have errors lets rollback changes we made
-      queryRunner.rollbackTransaction();
-      throw new BadRequestException('Failed Transaction. Rolling back.');
+  // async beginTran() {
+  //   const queryRunner = this.connection.createQueryRunner();
 
-    } finally {
-      // you need to release query runner which is manually created:
-      queryRunner.release();
-    }
+  //   await queryRunner.connect();
+  //   await queryRunner.startTransaction();
 
-    return true;
-  }
+  //   return queryRunner;
+  // }
 
-  async create(
-    id: number, payload: string
-  ) {
-    await this.manager.update(User, id, { hasForgotPass: payload });
-    throw new Error('wrong')
-
-    return 'Creating Success';
-  }
 
 }

@@ -15,12 +15,16 @@ import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
   imports: [
     UsersModule, 
     PassportModule,
-    PassportModule.register({ defaultStrategy: 'jwt', session: true }),
+    PassportModule.register({ 
+      defaultStrategy: 'jwt', 
+      property: 'user',
+      session: false 
+    }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '340s' }, // mudar pra 1s pra testar o httpInterceptor
+      signOptions: { expiresIn: '2d' }, // mudar pra 1s pra testar o httpInterceptor
     }),
   ],
-  exports: [AuthService],
+  exports: [AuthService, PassportModule, LocalStrategy],
 })
 export class AuthModule {}
