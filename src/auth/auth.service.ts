@@ -51,6 +51,9 @@ export class AuthService {
                 throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
             }
 
+            // const data = await this.login(user);
+            //const storedToken = await this.tokenService.store(data.access_token);
+
             const { email } = user;
 
             const respMail = await this.ngMailer.sendPasswordEmail({ email });
