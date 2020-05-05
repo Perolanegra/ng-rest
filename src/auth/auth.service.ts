@@ -55,11 +55,10 @@ export class AuthService {
 
             const { id, email } = user;
             const access_token = this.jwtService.sign({username: user.username, password: user.password}, {
-                expiresIn: '10s',
+                expiresIn: '15m',
             });
 
             // await this.tokenService.store({ token: access_token, id_user: id });
-
             // const encrypted = await bcrypt.hash(id.toString(), 10);
             const url = `http://localhost:4200/#/reset-password;bnag=${access_token}`; // confirmar 
 
