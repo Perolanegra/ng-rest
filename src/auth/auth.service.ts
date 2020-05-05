@@ -61,7 +61,7 @@ export class AuthService {
             // await this.tokenService.store({ token: access_token, id_user: id });
 
             // const encrypted = await bcrypt.hash(id.toString(), 10);
-            const url = `http://localhost:4200/#/reset-pass/${access_token}`; // confirmar 
+            const url = `http://localhost:4200/#/reset-password;bnag=${access_token}`; // confirmar 
 
             const respMail = await this.ngMailer.sendPasswordEmail({ email, url });
 
