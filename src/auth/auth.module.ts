@@ -8,6 +8,7 @@ import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from 'src/auth.controller';
 import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
+import { TokenModule } from 'src/token/token.module';
 
 @Module({
   providers: [AuthService, LocalStrategy, JwtStrategy, NgMailerService],
@@ -15,10 +16,11 @@ import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
   imports: [
     UsersModule, 
     PassportModule,
+    TokenModule,
     PassportModule.register({ 
       defaultStrategy: 'jwt', 
       property: 'user',
-      session: false 
+      session: false
     }),
     JwtModule.register({
       secret: jwtConstants.secret,

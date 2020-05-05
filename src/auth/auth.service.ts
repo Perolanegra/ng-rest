@@ -1,17 +1,19 @@
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/users.service';
 import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
 import { Connection } from 'typeorm';
 import { InjectConnection } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs'
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private usersService: UsersService,
         private ngMailer: NgMailerService,
+        private tokenService: TokenService,
         @InjectConnection() private connection: Connection,
         private jwtService: JwtService) { }
 
@@ -51,16 +53,24 @@ export class AuthService {
                 throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
             }
 
-            // const data = await this.login(user);
-            //const storedToken = await this.tokenService.store(data.access_token);
+            const { id, email } = user;
+            const access_token = this.jwtService.sign({username: user.username, password: user.password}, {
+                expiresIn: '10s',
+            });
 
-            const { email } = user;
+            // await this.tokenService.store({ token: access_token, id_user: id });
 
-            const respMail = await this.ngMailer.sendPasswordEmail({ email });
+            // const encrypted = await bcrypt.hash(id.toString(), 10);
+            const url = `http://localhost:4200/#/reset-pass/${access_token}`; // confirmar 
 
-            if(respMail && respMail.rejected.length === 0) {
-                return {success: true}; // parametrizar esse kra dps
+            const respMail = await this.ngMailer.sendPasswordEmail({ email, url });
+
+            if (!respMail && respMail.rejected.length) {
+                const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+                throw new InternalServerErrorException({ statusCode: 500, message: 'E-mail não enviado. Recarregue e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
             }
+
+            return { success: true }; // parametrizar esse kra dps
 
         } catch (error) {
             throw error;
@@ -71,5 +81,13 @@ export class AuthService {
         return await bcrypt.compare(plainPassword, hashedPassword);
     }
 
+    public async getResetToken(id: number): Promise<any | undefined> {
+        try {
+            const { token, ...rest } = await this.tokenService.findByIdUser(id);
+            return token;
+        } catch (error) {
+            throw error;
+        }
+    }
 
 }

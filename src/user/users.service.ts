@@ -42,19 +42,6 @@ export class UsersService {
     });
   }
 
-  // async setForgotPass(id: number, payload: string): Promise<any | undefined> {
-  //   return await getConnection().transaction(async manager => {
-  //     manager.getRepository(User).update(
-  //       { id: id },
-  //       { hasForgotPass: payload }
-  //     );
-  //     throw new Error();
-  //   }).catch(err => {
-  //     const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-  //     throw new InternalServerErrorException({ statusCode: 500, message: 'Recarregue a página e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
-  //   });
-  // }
-
   // async setForgotPass(id: number, payload: any): Promise<any | undefined> {
   //   const queryRunner = await this.beginTran();
   //   let resp;
