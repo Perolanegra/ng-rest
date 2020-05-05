@@ -55,7 +55,7 @@ export class AuthService {
 
             const { id, email } = user;
             const access_token = this.jwtService.sign({username: user.username, password: user.password}, {
-                expiresIn: '15m',
+                expiresIn: '10m',
             });
 
             // await this.tokenService.store({ token: access_token, id_user: id });
