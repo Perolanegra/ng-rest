@@ -47,29 +47,26 @@ export class AuthService {
     async sendCredentialsEmail(payload) {
         try {
             const user = await this.usersService.findByUsernameOrEmail(payload);
+            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
 
-            if (!user) {
-                const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-                throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
-            }
+            if (!user) throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
 
             const { id, email } = user;
             const access_token = this.jwtService.sign({username: user.username, password: user.password}, {
                 expiresIn: '10m',
             });
 
-            // await this.tokenService.store({ token: access_token, id_user: id });
-            // const encrypted = await bcrypt.hash(id.toString(), 10);
-            const url = `http://localhost:4200/#/reset-password;bnag=${access_token}`; // confirmar 
+            const url = `http://localhost:4200/#/reset-password;bnag=${access_token}`;
+
+            await this.tokenService.store({ token: access_token, id_user: id });
 
             const respMail = await this.ngMailer.sendPasswordEmail({ email, url });
 
             if (!respMail && respMail.rejected.length) {
-                const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
                 throw new InternalServerErrorException({ statusCode: 500, message: 'E-mail não enviado. Recarregue e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
             }
-
-            return { success: true }; // parametrizar esse kra dps
+            
+            return { statusCode: 200, message: 'Verifique sua caixa de email, enviamos um link para redefinição da senha.', title: 'E-mail Enviado.', type: 'success', style };
 
         } catch (error) {
             throw error;
@@ -80,10 +77,18 @@ export class AuthService {
         return await bcrypt.compare(plainPassword, hashedPassword);
     }
 
-    public async getResetToken(id: number): Promise<any | undefined> {
+    public async setResetPassword({ access_token , password }): Promise<any | undefined> {
         try {
-            const { token, ...rest } = await this.tokenService.findByIdUser(id);
-            return token;
+
+            const { id_user } = await this.tokenService.findByToken(access_token);
+            const encrypted = await bcrypt.hash(password, 10);
+
+            await this.usersService.resetPassword(encrypted, id_user);
+
+            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+
+            return { statusCode: 200, message: 'Senha redefinida com sucesso. Realize o login novamente.', title: 'Senha Redefinida.', type: 'success', style };
+
         } catch (error) {
             throw error;
         }

@@ -19,4 +19,9 @@ export class AuthController {
     return this.authService.sendCredentialsEmail(payload);
   }
 
+  @Post('auth/reset-pass')
+  async resetPass(@Body('payload') payload: { access_token: string, password: string }) {
+    return this.authService.setResetPassword(payload);
+  }
+
 }

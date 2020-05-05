@@ -33,6 +33,15 @@ export class TokenService {
     });
   }
 
+  findByToken(access_token: string): Promise<Token | undefined> {
+    return getConnection().transaction(async manager => {
+      return manager.getRepository(Token).findOne({ token: access_token });
+    }).catch(err => {
+      const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+      throw new InternalServerErrorException({ statusCode: 500, message: 'Seu token expirou, por favor solicite um novo acesso.', title: 'Token Expirado.', type: 'error', style });
+    });
+  }
+
   
 
 
