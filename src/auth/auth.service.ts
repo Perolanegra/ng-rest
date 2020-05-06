@@ -18,7 +18,6 @@ export class AuthService {
         private jwtService: JwtService) { }
 
     async validateUser(username: string, pass: string): Promise<any> {
-
         const user = await this.usersService.findByUser(username);
 
         if (!user) {
@@ -28,9 +27,7 @@ export class AuthService {
 
         const { password, id_nivel, created_at, updated_at, deleted_at, ...result } = user;
         
-        const passEncrypted = await bcrypt.hash(pass, 10); // encrypto novamente c o bcrypt
-        const isEqual = await this.passwordsAreEqual(password, passEncrypted);
-        
+        const isEqual = await this.passwordsAreEqual(pass, password);
 
         if (!isEqual) {
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
@@ -75,13 +72,12 @@ export class AuthService {
         }
     }
 
-    private passwordsAreEqual(hashedPassword: string, plainPassword: string): Promise<boolean> {
+    private passwordsAreEqual(plainPassword: string, hashedPassword: string): Promise<boolean> {
         return bcrypt.compare(plainPassword, hashedPassword);
     }
 
     public async setResetPassword({ access_token , password }): Promise<any | undefined> {
         try {
-
             const { id_user } = await this.tokenService.findByToken(access_token);
             const encrypted = await bcrypt.hash(password, 10);
 
