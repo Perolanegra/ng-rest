@@ -5,8 +5,9 @@ import { UsersService } from 'src/user/users.service';
 import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
 import { Connection } from 'typeorm';
 import { InjectConnection } from '@nestjs/typeorm';
-import * as bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcryptjs';
 import { TokenService } from 'src/token/token.service';
+
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,7 @@ export class AuthService {
         }
 
         const { password, id_nivel, created_at, updated_at, deleted_at, ...result } = user;
-        
+
         const isEqual = await this.passwordsAreEqual(pass, password);
 
         if (!isEqual) {
@@ -51,7 +52,7 @@ export class AuthService {
             if (!user) throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
 
             const { id, email } = user;
-            const access_token = this.jwtService.sign({username: user.username, password: user.password}, {
+            const access_token = this.jwtService.sign({ username: user.username, password: user.password }, {
                 expiresIn: '10m',
             });
 
@@ -64,7 +65,7 @@ export class AuthService {
             if (!respMail && respMail.rejected.length) {
                 throw new InternalServerErrorException({ statusCode: 500, message: 'E-mail não enviado. Recarregue e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
             }
-            
+
             return { statusCode: 200, message: 'Verifique sua caixa de email, enviamos um link para redefinição da senha.', title: 'E-mail Enviado.', type: 'success', style };
 
         } catch (error) {
@@ -76,8 +77,10 @@ export class AuthService {
         return bcrypt.compare(plainPassword, hashedPassword);
     }
 
-    public async setResetPassword({ access_token , password }): Promise<any | undefined> {
+    public async setResetPassword({ access_token, password }): Promise<any | undefined> {
         try {
+            this.isAuthenticated(access_token, 'Acesso Expirado.', 'Senha não redefinida. Por favor, realize uma nova solicitação.');
+
             const { id_user } = await this.tokenService.findByToken(access_token);
             const encrypted = await bcrypt.hash(password, 10);
 
@@ -89,6 +92,15 @@ export class AuthService {
 
         } catch (error) {
             throw error;
+        }
+    }
+
+    private isAuthenticated(token: string, errTitle: string, errMsg: string): void {
+        try {
+            this.jwtService.verify(token);
+        } catch (error) {
+            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+            throw new InternalServerErrorException({ statusCode: 500, message: errMsg, title: errTitle, type: 'error', style });
         }
     }
 
