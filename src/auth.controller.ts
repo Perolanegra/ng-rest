@@ -24,4 +24,9 @@ export class AuthController {
     return this.authService.setResetPassword(payload);
   }
 
+  @Post('auth/sign-up')
+  async signUp(@Body('payload') payload: { name:string, username: string, pass: string, email: string }) {
+    return this.authService.signUp(payload);
+  }
+
 }

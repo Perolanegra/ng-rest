@@ -66,7 +66,7 @@ export class AuthService {
                 throw new InternalServerErrorException({ statusCode: 500, message: 'E-mail não enviado. Recarregue e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
             }
 
-            return { statusCode: 200, message: 'Verifique sua caixa de email, enviamos um link para redefinição da senha.', title: 'E-mail Enviado.', type: 'success', style };
+            return { statusCode: 201, message: 'Verifique sua caixa de email, enviamos um link para redefinição da senha.', title: 'E-mail Enviado.', type: 'success', style };
 
         } catch (error) {
             throw error;
@@ -88,8 +88,21 @@ export class AuthService {
 
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
 
-            return { statusCode: 200, message: 'Senha redefinida com sucesso. Realize o login novamente.', title: 'Senha Redefinida.', type: 'success', style };
+            return { statusCode: 201, message: 'Senha redefinida com sucesso. Realize o login novamente.', title: 'Senha Redefinida.', type: 'success', style };
 
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async signUp({ name, username, pass, email }): Promise<any | undefined> {
+        try {
+            const password = await bcrypt.hash(pass, 10);
+            await this.usersService.store({ name, username, password, email });
+
+            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+
+            return { statusCode: 201, message: 'Verifique sua conta através do link que enviamos para seu email.', title: 'Conta Criada.', type: 'success', style };
         } catch (error) {
             throw error;
         }
