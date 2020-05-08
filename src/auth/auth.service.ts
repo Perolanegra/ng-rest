@@ -53,7 +53,7 @@ export class AuthService {
 
             const { id, email } = user;
             const access_token = this.jwtService.sign({ username: user.username, password: user.password }, {
-                expiresIn: '10m',
+                expiresIn: '7m',
             });
 
             const url = `http://localhost:4200/#/reset-password;bnag=${access_token}`;
