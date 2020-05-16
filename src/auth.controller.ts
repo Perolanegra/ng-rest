@@ -2,10 +2,11 @@
 import { Controller, Request, Post, UseGuards, Get, Param, Body } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
+import { AppService } from './app.service';
 
 @Controller()
 export class AuthController {
-  constructor(private authService: AuthService) { 
+  constructor(private authService: AuthService, private appService: AppService) { 
   }
 
   @UseGuards(LocalAuthGuard)
@@ -16,7 +17,7 @@ export class AuthController {
 
   @Get('/')
   async index() {
-    return `Ng-rest Working at: ${Date.now()}`
+    return this.appService.itsOn();
   }
 
   @Post('auth/forgot-pass')

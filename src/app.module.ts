@@ -11,7 +11,7 @@ import { MailerModule, HandlebarsAdapter } from '@nestjs-modules/mailer';
     UsersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'localhost', // mudar aqui dps
       port: 3306,
       username: 'ng',
       password: '1061043$',
