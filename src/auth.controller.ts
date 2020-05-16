@@ -14,6 +14,11 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  @Get('/')
+  async index() {
+    return `Ng-rest Working at: ${Date.now()}`
+  }
+
   @Post('auth/forgot-pass')
   async forgotPass(@Body('payload') payload: string) {
     return this.authService.sendCredentialsEmail(payload);
