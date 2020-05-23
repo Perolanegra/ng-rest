@@ -11,11 +11,11 @@ import { MailerModule, HandlebarsAdapter } from '@nestjs-modules/mailer';
     UsersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost', // mudar aqui dps
-      port: 3306,
-      username: 'ng',
-      password: '1061043$',
-      database: 'ng_ba',
+      host: process.env.HOST || 'localhost',
+      port: Number(process.env.PORT) || 3306,
+      username: process.env.USERNAME || 'ng',
+      password: process.env.PASSWORD || '1061043$',
+      database: process.env.DATABASE || 'ng_ba',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       // autoLoadEntities: true,
