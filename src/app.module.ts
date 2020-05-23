@@ -17,6 +17,8 @@ import { MailerModule, HandlebarsAdapter } from '@nestjs-modules/mailer';
       password: process.env.PASSWORD || '1061043$',
       database: process.env.DATABASE || 'ng_ba',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      acquireTimeout: 60 * 60 * 1000,
+      connectTimeout: 60 * 60 * 1000,
       synchronize: true,
       // autoLoadEntities: true,
     }),
