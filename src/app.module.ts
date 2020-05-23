@@ -12,7 +12,7 @@ import { MailerModule, HandlebarsAdapter } from '@nestjs-modules/mailer';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.HOST || 'localhost',
-      port: Number(process.env.PORT) || 3306,
+      port: 3306,
       username: process.env.USERNAME || 'ng',
       password: process.env.PASSWORD || '1061043$',
       database: process.env.DATABASE || 'ng_ba',
