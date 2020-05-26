@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 3000;
   const corsOptions = {
-    origin: 'https://github.com/',
+    origin: 'https://perolanegra.github.io/ng-forum',
     optionsSucessStatus: 200
   };
   app.use(cors(corsOptions));
