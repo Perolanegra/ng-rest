@@ -6,7 +6,7 @@ import * as rateLimit from 'express-rate-limit';
 const cors = require('cors');
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bodyParser: false });
+  const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 3000;
   const corsOptions = {
     origin: '*',
