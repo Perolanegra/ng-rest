@@ -4,6 +4,12 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './user/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule, HandlebarsAdapter } from '@nestjs-modules/mailer';
+import { IssuesModule } from './issues/issues.module';
+import { MediaModule } from './media/media.module';
+import { PhotosModule } from './photos/photos.module';
+import { AnswersModule } from './answers/answers.module';
+import { TagsModule } from './tags/tags.module';
+
 
 @Module({
   imports: [
@@ -46,6 +52,11 @@ import { MailerModule, HandlebarsAdapter } from '@nestjs-modules/mailer';
         },
       },
     }),
+    IssuesModule,
+    MediaModule,
+    PhotosModule,
+    AnswersModule,
+    TagsModule
   ],
   providers: [AppService],
 })

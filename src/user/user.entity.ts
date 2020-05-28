@@ -15,7 +15,7 @@ export class User {
   @Column({ default: 4 })
   id_nivel: number;
 
-  @Column({ default: '' })
+  @Column({ nullable: false, length: 25, type: 'varchar' })
   name: string;
 
   @Column({ default: '' })

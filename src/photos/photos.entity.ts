@@ -1,17 +1,17 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
 @Entity()
-export class Token {
+export class Photos {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: false })
-    id_user: number;
+    id_issue: number;
 
-    @Column({ nullable: false, type: "text" })
-    token: string;
+    @Column({ nullable: false, type: 'varchar', length: 250 })
+    url: string;
 
-    @Column({ type: 'timestamp', default: () => "current_timestamp" })
+   @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;
 
     @Column({ default: '' })
