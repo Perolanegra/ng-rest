@@ -1,4 +1,3 @@
-
 import { Injectable, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/users.service';
@@ -7,7 +6,6 @@ import { Connection } from 'typeorm';
 import { InjectConnection } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { TokenService } from 'src/token/token.service';
-
 
 @Injectable()
 export class AuthService {
