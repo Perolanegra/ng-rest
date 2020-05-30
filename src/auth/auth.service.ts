@@ -6,6 +6,7 @@ import { Connection } from 'typeorm';
 import { InjectConnection } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { TokenService } from 'src/token/token.service';
+import { CoreService } from 'src/core/core.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
         private ngMailer: NgMailerService,
         private tokenService: TokenService,
         @InjectConnection() private connection: Connection,
+        private core: CoreService,
         private jwtService: JwtService) { }
 
     async validateUser(username: string, pass: string): Promise<any> {
@@ -75,11 +77,11 @@ export class AuthService {
         return bcrypt.compare(plainPassword, hashedPassword);
     }
 
-    public async setResetPassword({ access_token, password }): Promise<any | undefined> {
+    public async setResetPassword(password: string, req): Promise<any | undefined> {
         try {
-            this.isAuthenticated(access_token, 'Acesso Expirado.', 'Senha não redefinida. Por favor, realize uma nova solicitação.');
+            this.core.authorize(req);
 
-            const { id_user } = await this.tokenService.findByToken(access_token);
+            const { id_user } = await this.tokenService.findByToken(req.headers.authorization);
             const encrypted = await bcrypt.hash(password, 10);
 
             await this.usersService.resetPassword(encrypted, id_user);
@@ -103,15 +105,6 @@ export class AuthService {
             return { statusCode: 201, message: 'Verifique sua conta através do link que enviamos para seu email.', title: 'Conta Criada.', type: 'success', style };
         } catch (error) {
             throw error;
-        }
-    }
-
-    public isAuthenticated(token: string, errTitle: string, errMsg: string): void {
-        try {
-            this.jwtService.verify(token);
-        } catch (error) {
-            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-            throw new UnauthorizedException({ statusCode: 401, message: errMsg, title: errTitle, type: 'error', style });
         }
     }
 

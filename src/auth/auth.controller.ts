@@ -26,8 +26,8 @@ export class AuthController {
   }
 
   @Post('auth/reset-pass') // tirar o acess_token
-  async resetPass(@Body('payload') payload: { access_token: string, password: string }) {
-    return this.authService.setResetPassword(payload);
+  async resetPass(@Request() req, @Body('payload') payload: { password: string }) {
+    return this.authService.setResetPassword(payload.password, req);
   }
 
   @Post('auth/sign-up')

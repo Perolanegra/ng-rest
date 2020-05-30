@@ -10,9 +10,10 @@ import { AuthController } from 'src/auth/auth.controller';
 import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
 import { TokenModule } from 'src/token/token.module';
 import { AppService } from 'src/app.service';
+import { CoreService } from 'src/core/core.service';
 
 @Module({
-  providers: [AuthService, AppService, LocalStrategy, JwtStrategy, NgMailerService],
+  providers: [AuthService, AppService, LocalStrategy, JwtStrategy, NgMailerService, CoreService],
   controllers: [AuthController],
   imports: [
     UsersModule, 
