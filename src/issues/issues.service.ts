@@ -14,7 +14,7 @@ export class IssuesService {
     private core: CoreService) { }
 
   async store(req, payload: any): Promise<any | undefined> {
-    // this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente para poder criar o Issue.');
+    this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente para poder criar o Issue.');
 
     return getConnection().transaction(async manager => {
       const storedIssue = await manager.getRepository(Issues).save(payload);
