@@ -27,7 +27,7 @@ export class UsersService {
     return this.usersRepository.findOne(id);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     return getConnection().transaction(async manager => {
       manager.getRepository(User).delete(id);
     }).catch(err => {

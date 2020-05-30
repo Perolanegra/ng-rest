@@ -12,19 +12,24 @@ export class CoreService {
             this.jwtService.verify(token);
         } catch (error) {
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-            throw new UnauthorizedException({ statusCode: 500, message: errMsg, title: errTitle, type: 'error', style });
+            throw new UnauthorizedException({ statusCode: 401, message: errMsg, title: errTitle, type: 'error', style });
         }
     }
 
     public authorize(req, title, errorMsg) {
-        const base_auth = req.headers.authorization;
-        if(!base_auth) throw new UnauthorizedException();
+        try {
+            const base_auth = req.headers.authorization;
+            if (!base_auth) throw new UnauthorizedException();
 
-        const splitted = base_auth.split(' ');
+            const splitted = base_auth.split(' ');
 
-        const { ...token } = splitted;
+            const { ...token } = splitted;
 
-        this.isAuthenticated(token, title, errorMsg);
+            this.isAuthenticated(token, title, errorMsg);
+        } catch (error) {
+            throw error;
+        }
+
     }
 
 }
