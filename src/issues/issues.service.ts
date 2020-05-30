@@ -14,10 +14,14 @@ export class IssuesService {
     private core: CoreService) { }
 
   async store(req, payload: any): Promise<any | undefined> {
-    this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente para poder criar o Issue.');
+    // this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente para poder criar o Issue.');
 
     return getConnection().transaction(async manager => {
-      await manager.getRepository(Issues).save(payload);
+      const storedIssue = await manager.getRepository(Issues).save(payload);
+      if(storedIssue && storedIssue.created_at) {
+        // chamo os outros serviços pra fazer os Joins com as entidades relacionadas.
+      }
+      
     }).catch(err => {
       const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
       throw new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível criar o Issue. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
