@@ -8,6 +8,9 @@ export class Media {
     @Column({ nullable: false })
     id_issue: number;
 
+    @Column({ nullable: false })
+    id_post: number;
+
     @Column({ nullable: false, type: 'varchar', length: 250 })
     url: string;
 
