@@ -1,8 +1,8 @@
 
 import { Controller, Request, Post, UseGuards, Get, Param, Body } from '@nestjs/common';
-import { LocalAuthGuard } from './auth/local-auth.guard';
-import { AuthService } from './auth/auth.service';
-import { AppService } from './app.service';
+import { LocalAuthGuard } from './local-auth.guard';
+import { AuthService } from './auth.service';
+import { AppService } from '../app.service';
 
 @Controller()
 export class AuthController {
@@ -25,7 +25,7 @@ export class AuthController {
     return this.authService.sendCredentialsEmail(payload);
   }
 
-  @Post('auth/reset-pass')
+  @Post('auth/reset-pass') // mudar dps
   async resetPass(@Body('payload') payload: { access_token: string, password: string }) {
     return this.authService.setResetPassword(payload);
   }

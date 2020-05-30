@@ -106,12 +106,12 @@ export class AuthService {
         }
     }
 
-    private isAuthenticated(token: string, errTitle: string, errMsg: string): void {
+    public isAuthenticated(token: string, errTitle: string, errMsg: string): void {
         try {
             this.jwtService.verify(token);
         } catch (error) {
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-            throw new InternalServerErrorException({ statusCode: 500, message: errMsg, title: errTitle, type: 'error', style });
+            throw new UnauthorizedException({ statusCode: 401, message: errMsg, title: errTitle, type: 'error', style });
         }
     }
 

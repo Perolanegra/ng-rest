@@ -6,7 +6,7 @@ import { LocalStrategy } from './local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
-import { AuthController } from 'src/auth.controller';
+import { AuthController } from 'src/auth/auth.controller';
 import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
 import { TokenModule } from 'src/token/token.module';
 import { AppService } from 'src/app.service';
@@ -28,6 +28,6 @@ import { AppService } from 'src/app.service';
       signOptions: { expiresIn: '2d' }, // mudar pra 1s pra testar o httpInterceptor
     }),
   ],
-  exports: [AuthService, PassportModule, LocalStrategy],
+  exports: [AuthService, PassportModule, LocalStrategy, JwtModule],
 })
 export class AuthModule {}
