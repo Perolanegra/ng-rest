@@ -8,7 +8,7 @@ export class IssuesService {
 
     constructor(private jwtService: JwtService) { }
 
-    async store(payload, req: any): Promise<any | undefined> { // por o comportamento do metodo em algo centralizado com as funções do crud.
+    async store(req, payload: any): Promise<any | undefined> { // por o comportamento do metodo em algo centralizado com as funções do crud.
         const base_auth = req.headers.authorization;
         if(!base_auth) throw new UnauthorizedException();
 

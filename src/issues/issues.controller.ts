@@ -10,7 +10,7 @@ export class IssuesController {
 
   @Post('issues/store')
   async resetPass(@Request() req, @Body('payload') payload: any) {
-    return this.issService.store(payload, req);
+    return this.issService.store(req, payload);
   }
 
 
