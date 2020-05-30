@@ -79,7 +79,7 @@ export class AuthService {
 
     public async setResetPassword(password: string, req): Promise<any | undefined> {
         try {
-            this.core.authorize(req);
+            this.core.authorize(req, 'Acesso Expirado.', 'Senha não redefinida. Por favor, realize uma nova solicitação.');
 
             const { id_user } = await this.tokenService.findByToken(req.headers.authorization);
             const encrypted = await bcrypt.hash(password, 10);

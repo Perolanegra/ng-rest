@@ -16,7 +16,7 @@ export class CoreService {
         }
     }
 
-    public authorize(req) {
+    public authorize(req, title, errorMsg) {
         const base_auth = req.headers.authorization;
         if(!base_auth) throw new UnauthorizedException();
 
@@ -24,7 +24,7 @@ export class CoreService {
 
         const { ...token } = splitted;
 
-        this.isAuthenticated(token, 'Acesso Expirado.', 'Realize a operação novamente.');
+        this.isAuthenticated(token, title, errorMsg);
     }
 
 }
