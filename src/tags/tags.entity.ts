@@ -1,25 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { TagsEnum } from './tags.enum';
 
-enum TagsEnum {
-    BUG = 'bug',
-    IMPLEMENTATION = 'implementation',
-    NEW = 'created',
-    CLOSED = 'closed',
-    REOPEN = 'reopen',
-    ERROR = 'error',
-    RESOLVED = 'resolved',
-    ASK = 'question',
-    HOT = 'hot',
-    OLD = 'deprecated'
-}
 
 @Entity()
 export class Tags {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @Column({ nullable: false })
-    id_issue: number;
 
     @Column("enum", { enum: TagsEnum })
     tags: TagsEnum;

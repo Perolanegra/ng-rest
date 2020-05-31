@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { TagsEnum } from 'src/tags/tags.enum';
 
 enum Stars {
     ONE = 1,
@@ -30,6 +31,9 @@ export class Issues {
 
     @Column({ nullable: false, default: 0 }) // setar +1 view por acc diff
     views: Number;
+
+    @Column({ nullable: false, default: '', type: 'varchar', length: 40 })
+    tags: string;
 
     @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;

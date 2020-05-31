@@ -3,6 +3,7 @@ import { Issues } from './issues.entity';
 import { getConnection, TransactionRepository, Repository } from 'typeorm';
 import { CoreService } from 'src/core/core.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TagsService } from 'src/tags/tags.service';
 
 @Injectable()
 export class IssuesService {
@@ -11,24 +12,38 @@ export class IssuesService {
     @TransactionRepository(Issues)
     @InjectRepository(Issues)
     private issuesRespository: Repository<Issues>,
+    private tagService: TagsService,
     private core: CoreService) { }
 
-  async store(req, payload: any): Promise<any | undefined> {
-    this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente para poder criar o Issue.');
+  async store(payload: any): Promise<any | undefined> {
+    
+    if(payload.id_tags.length) {
+      const resultSetTags = await this.tagService.getByGivenIds(payload.id_tags);
+      if(resultSetTags.length) {
+        const selectedTagsArr = (await resultSetTags).map(data => data.tags);
+        const selectedTagsStr = JSON.stringify(selectedTagsArr);
+        const selectedTags = selectedTagsStr.substr(1, selectedTagsStr.length - 2);
+        payload.issues.tags = selectedTags.replace(/"/g, "");
+      }
+    }
 
     return getConnection().transaction(async manager => {
-      const storedIssue = await manager.getRepository(Issues).save(payload);
-      if(storedIssue && storedIssue.created_at) {
+      const { issues } = payload;
+      const storedIssue = await manager.getRepository(Issues).save(issues);
+      if (storedIssue && storedIssue.created_at) {
+
         // chamo os outros serviços pra fazer os Joins com as entidades relacionadas.
       }
-      
+
     }).catch(err => {
+      console.log('err: ', err);
+
       const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
       throw new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível criar o Issue. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
     });
   }
 
-  findAll(req): Promise<Issues[]> {
+  getAll(req): Promise<Issues[]> {
     this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente.');
     return this.issuesRespository.find(); // por o paginate por 15, kda request.
   }
