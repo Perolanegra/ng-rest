@@ -36,8 +36,6 @@ export class IssuesService {
       }
 
     }).catch(err => {
-      console.log('err: ', err);
-
       const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
       throw new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível criar o Issue. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
     });
