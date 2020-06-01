@@ -18,10 +18,16 @@ export class IssuesService {
     private core: CoreService) { }
 
   async store(payload: any): Promise<any | undefined> {
-    
-    if(payload.id_tags.length) {
-      const resultSetTags = await this.tagService.getByGivenIds(payload.id_tags);
-      if(resultSetTags.length) {
+    if (payload.id_tags.length) {
+      const params = {
+        entity: 'Tags', 
+        ids: [...payload.id_tags],
+        output: 'entity.tags'
+      };
+      
+      const resultSetTags = await this.tagService.getByGivenIds(params);
+      
+      if (resultSetTags.length) {
         const selectedTagsArr = (await resultSetTags).map(data => data.tags);
         const selectedTagsStr = JSON.stringify(selectedTagsArr);
         const selectedTags = selectedTagsStr.substr(1, selectedTagsStr.length - 2);

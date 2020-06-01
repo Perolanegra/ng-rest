@@ -49,7 +49,7 @@ export class NgRepository {
         });
     }
 
-    public delete(entity: string, id: number, errorMsg: string) {
+    public delete(entity: string, id: number, errorMsg: string): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
             getConnection().transaction(async manager => {
                 const deleted = await manager.getRepository(entity).update(
@@ -64,9 +64,28 @@ export class NgRepository {
         });
     }
 
+    public getById(payload: { entity: string, id: number[], output: string }): Promise<any | undefined> {
+        return getConnection().createQueryBuilder(payload.entity, "entity")
+            .select(payload.output)
+            .where("entity.id in =:id", { id: payload.id })
+            .getOne();
+    }
 
+    /**
+     * 
+     * @param payload objeto que define as características do resultSet.
+     * @param payload.entity stringParam da Entidade que será executada a query.
+     * @param payload.ids ids que serão buscados.
+     * @param payload.output colunas que serão retornadas em string, seguindo padrão: 'entity.column1, entity.column2'.
+     * @author igor.alves
+     */
+    public getByGivenIds(payload: { entity: string, ids: number[], output: string }): Promise<any[] | undefined> {
+        return getConnection().createQueryBuilder(payload.entity, "entity")
+            .select(payload.output)
+            .where("entity.id in (:ids)", { ids: [...payload.ids] })
+            .getMany();
+    }
 }
-
 
 // return this.tagsRespository.find( { retornando tudo
 //     where: `id IN(${payload})` 
