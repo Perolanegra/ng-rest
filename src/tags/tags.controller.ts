@@ -11,7 +11,7 @@ export class TagsController {
   @Get('tags/list')
   async getIssues(@Request() req) {
     this.core.authorize(req, 'Acesso Expirado.', 'Realize o login novamente.');
-    return this.tagService.getAll(req);
+    return this.tagService.getAll();
   }
 
 

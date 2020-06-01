@@ -63,33 +63,4 @@ export class UsersService {
     });
   }
 
-  // async setForgotPass(id: number, payload: any): Promise<any | undefined> {
-  //   const queryRunner = await this.beginTran();
-  //   let resp;
-
-  //   try {
-  //     resp = await queryRunner.query(`UPDATE user SET hasForgotPass = '${payload}' WHERE id = ${id};`);
-  //     await queryRunner.commitTransaction();
-  //   } catch (err) {
-  //     // since we have errors lets rollback changes we made
-  //     queryRunner.rollbackTransaction();
-  //     throw new BadRequestException('Operação indisponível no momento. Recarregue a página e tente novamente.');
-
-  //   } finally {
-  //     queryRunner.release();
-  //   }
-
-  //   return resp;
-  // }
-
-  // async beginTran() {
-  //   const queryRunner = this.connection.createQueryRunner();
-
-  //   await queryRunner.connect();
-  //   await queryRunner.startTransaction();
-
-  //   return queryRunner;
-  // }
-
-
 }

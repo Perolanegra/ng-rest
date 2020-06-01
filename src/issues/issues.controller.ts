@@ -10,7 +10,8 @@ export class IssuesController {
 
   @Get('issues/list')
   async getIssues(@Request() req) {
-    return this.issService.getAll(req);
+    this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente.');
+    return this.issService.getAll();
   }
 
   @Post('issues/store')

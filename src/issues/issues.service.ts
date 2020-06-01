@@ -4,6 +4,7 @@ import { getConnection, TransactionRepository, Repository } from 'typeorm';
 import { CoreService } from 'src/core/core.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagsService } from 'src/tags/tags.service';
+import { NgRepository } from 'src/core/ng-respository.service';
 
 @Injectable()
 export class IssuesService {
@@ -13,6 +14,7 @@ export class IssuesService {
     @InjectRepository(Issues)
     private issuesRespository: Repository<Issues>,
     private tagService: TagsService,
+    private repository: NgRepository,
     private core: CoreService) { }
 
   async store(payload: any): Promise<any | undefined> {
@@ -41,9 +43,8 @@ export class IssuesService {
     });
   }
 
-  getAll(req): Promise<Issues[]> {
-    this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente.');
-    return this.issuesRespository.find(); // por o paginate por 15, kda request.
+  getAll(): Promise<Issues[]> {
+    return this.repository.getAll('Issues'); // por o paginate por 15, kda request.
   }
 
   async deleteById(req, id: number): Promise<void> {
