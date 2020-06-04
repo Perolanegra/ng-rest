@@ -15,7 +15,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @Get('/')
+  @Get('index')
   async index() {
     return this.appService.itsOn();
   }
@@ -25,7 +25,7 @@ export class AuthController {
     return this.authService.sendCredentialsEmail(payload);
   }
 
-  @Post('auth/reset-pass') // tirar o acess_token
+  @Post('auth/reset-pass')
   async resetPass(@Request() req, @Body('payload') payload: { password: string }) {
     return this.authService.setResetPassword(payload.password, req);
   }

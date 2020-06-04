@@ -1,10 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Issues } from './issues.entity';
 import { getConnection, TransactionRepository, Repository } from 'typeorm';
-import { CoreService } from 'src/core/core.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagsService } from 'src/tags/tags.service';
 import { NgRepository } from 'src/core/ng-respository.service';
+import { PostService } from 'src/post/post.service';
 
 @Injectable()
 export class IssuesService {
@@ -14,8 +14,8 @@ export class IssuesService {
     @InjectRepository(Issues)
     private issuesRespository: Repository<Issues>,
     private tagService: TagsService,
-    private repository: NgRepository,
-    private core: CoreService) { }
+    // private postService: PostService,
+    private repository: NgRepository) { }
 
   async store(payload: any): Promise<any | undefined> {
     if (payload.id_tags.length) {
@@ -40,6 +40,8 @@ export class IssuesService {
       const storedIssue = await manager.getRepository(Issues).save(issues);
       if (storedIssue && storedIssue.created_at) {
 
+        // this.postService.store()
+
         // chamo os outros serviços pra fazer os Joins com as entidades relacionadas.
       }
 
@@ -54,7 +56,6 @@ export class IssuesService {
   }
 
   async deleteById(req, id: number): Promise<void> {
-    this.core.authorize(req, 'Sessão Expirada.', 'Realize o login novamente.');
     return getConnection().transaction(async manager => {
       manager.getRepository(Issues).delete(id);
     }).catch(err => {

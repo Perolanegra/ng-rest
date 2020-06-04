@@ -2,11 +2,8 @@ import { Injectable, UnauthorizedException, InternalServerErrorException } from 
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/users.service';
 import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
-import { Connection } from 'typeorm';
-import { InjectConnection } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { TokenService } from 'src/token/token.service';
-import { CoreService } from 'src/core/core.service';
 
 @Injectable()
 export class AuthService {
@@ -14,8 +11,6 @@ export class AuthService {
         private usersService: UsersService,
         private ngMailer: NgMailerService,
         private tokenService: TokenService,
-        @InjectConnection() private connection: Connection,
-        private core: CoreService,
         private jwtService: JwtService) { }
 
     async validateUser(username: string, pass: string): Promise<any> {
@@ -40,7 +35,7 @@ export class AuthService {
 
     async login(user: any) { // o parametro user eh o retorno do localstrategy validate
         return {
-            access_token: this.jwtService.sign(user),
+            access_token: this.jwtService.sign(user)
         };
     }
 
@@ -79,8 +74,6 @@ export class AuthService {
 
     public async setResetPassword(password: string, req): Promise<any | undefined> {
         try {
-            this.core.authorize(req, 'Acesso Expirado.', 'Senha não redefinida. Por favor, realize uma nova solicitação.');
-
             const { id_user } = await this.tokenService.findByToken(req.headers.authorization);
             const encrypted = await bcrypt.hash(password, 10);
 
