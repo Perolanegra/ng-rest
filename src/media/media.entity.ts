@@ -11,7 +11,7 @@ export class Media {
     @Column({ nullable: false })
     id_post: number;
 
-    @Column({ nullable: false, type: 'varchar', length: 250 })
+    @Column({ nullable: false, type: 'varchar', length: 250, default: '' })
     url: string;
 
    @Column({ type: 'timestamp', default: () => "current_timestamp" })

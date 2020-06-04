@@ -27,7 +27,7 @@ import { AuthMiddleware } from 'src/core/auth-middleware';
     }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '28800s' },
+      signOptions: { expiresIn: '28800s' }, // 8 horas
     }),
   ],
   exports: [AuthService, PassportModule, LocalStrategy, JwtModule],
@@ -41,7 +41,7 @@ export class AuthModule implements NestModule {
         { path: 'auth/forgot-pass', method: RequestMethod.POST },
         { path: 'index', method: RequestMethod.GET },
       )
-      .forRoutes({ path: 'issues/store', method: RequestMethod.ALL });
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
 

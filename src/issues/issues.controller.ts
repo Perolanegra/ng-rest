@@ -1,5 +1,5 @@
 
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Request } from '@nestjs/common';
 import { IssuesService } from './issues.service';
 
 @Controller()
@@ -12,7 +12,8 @@ export class IssuesController {
   }
 
   @Post('issues/store')
-  async addIssue(@Body('payload') payload: any) {
+  async addIssue(@Request() req, @Body('payload') payload: any) {
+    payload.token = req.headers.authorization;
     return this.issService.store(payload);
   }
 
