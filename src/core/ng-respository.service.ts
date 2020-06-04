@@ -12,6 +12,12 @@ export class NgRepository {
         return getConnection().manager.getRepository(entity).find();
     }
 
+    /**
+     * @author igor.alves
+     * @param entity Entidade em string a ser persistida
+     * @param payload Objeto da entidade com suas devidas propriedades para persistência dos dados.
+     * @param errorMsg Mensagem que deverá ser lançada caso a inserção de dados dê erro.
+     */
     public store(entity: string, payload: any, errorMsg: string): Promise<any | undefined> { // errorMsg ex: 'Não foi possível criar o Issue. Recarregue e tente novamente.'
         return new Promise((resolve, reject) => {
             getConnection().transaction(async manager => {
@@ -79,7 +85,7 @@ export class NgRepository {
      * @param payload.output colunas que serão retornadas em string, seguindo padrão: 'entity.column1, entity.column2'.
      * @author igor.alves
      */
-    public getByGivenIds(payload: { entity: string, ids: number[], output: string }): Promise<any[] | undefined> {
+    public getEntityByGivenIds(payload: { entity: string, ids: number[], output: string }): Promise<any[] | undefined> {
         return getConnection().createQueryBuilder(payload.entity, "entity")
             .select(payload.output)
             .where("entity.id in (:ids)", { ids: [...payload.ids] })

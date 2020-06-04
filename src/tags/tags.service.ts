@@ -11,7 +11,7 @@ export class TagsService {
     }
 
     public getByGivenIds(payload): Promise<Tags[] | undefined> {
-        return this.repository.getByGivenIds(payload);
+        return this.repository.getEntityByGivenIds(payload);
     }
 }
 
