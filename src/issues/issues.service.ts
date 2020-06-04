@@ -6,7 +6,6 @@ import { TagsService } from 'src/tags/tags.service';
 import { NgRepository } from 'src/core/ng-respository.service';
 import { PostService } from 'src/post/post.service';
 import { TokenService } from 'src/token/token.service';
-import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class IssuesService {
@@ -18,7 +17,6 @@ export class IssuesService {
     private tagService: TagsService,
     private tokenService: TokenService,
     private postService: PostService,
-    private mediaService: MediaService,
     private repository: NgRepository) { }
 
   async store(payload: any): Promise<any | undefined> {
