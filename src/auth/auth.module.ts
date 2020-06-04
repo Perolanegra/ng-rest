@@ -27,7 +27,7 @@ import { AuthMiddleware } from 'src/core/auth-middleware';
     }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '2d' }, // mudar pra 1s pra testar o httpInterceptor
+      signOptions: { expiresIn: '28800s' },
     }),
   ],
   exports: [AuthService, PassportModule, LocalStrategy, JwtModule],
