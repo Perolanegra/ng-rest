@@ -1,15 +1,14 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { TagsEnum } from './tags.enum';
+
 
 @Entity()
-export class Token {
+export class Tags {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ nullable: false })
-    id_user: number;
-
-    @Column({ nullable: false, type: "text" })
-    token: string;
+    @Column("enum", { enum: TagsEnum })
+    tags: TagsEnum;
 
     @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;
