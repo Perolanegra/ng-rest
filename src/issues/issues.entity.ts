@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
-import { TagsEnum } from 'src/tags/tags.enum';
 
 enum Stars {
     ONE = 1,
