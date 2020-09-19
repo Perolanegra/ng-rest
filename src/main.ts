@@ -7,7 +7,8 @@ import * as rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port = process.env.PORT || 3000;
+  const port = process.env.HTTP_PORT;
+
   app.use(helmet());
   app.enableCors({ origin: 'https://www.ng-forum.com/' })
   // var corsOptions = {
@@ -23,6 +24,11 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(port);
+  await app.listen(port, () => {
+    port ? console.log(`Serving at port ${port}`)
+      : console.log('Necessário criar arquivo .env e apontar porta 3001');
+  }).catch(err => {
+    console.log('erro =>', err);
+  });
 }
 bootstrap();

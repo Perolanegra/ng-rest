@@ -1,9 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
-import { TagsEnum } from 'src/tags/tags.enum';
 
 enum Stars {
     ONE = 1,
-    TWO =  2,
+    TWO = 2,
     THREE = 3,
     FOUR = 4,
     FIVE = 5
@@ -34,6 +33,9 @@ export class Issues {
 
     @Column({ nullable: false, default: '', type: 'varchar', length: 40 })
     tags: string;
+
+    @Column({ nullable: false, default: 0 })
+    posts: Number;
 
     @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;

@@ -24,41 +24,42 @@ export class IssuesService {
       getConnection().transaction(async manager => {
         if (payload.id_tags.length) {
           const params = {
-            entity: 'Tags', 
+            entity: 'Tags',
             ids: [...payload.id_tags],
             output: 'entity.tags'
           };
-    
+
           const resultSetTags = await this.tagService.getByGivenIds(params);
-          
+
           if (resultSetTags.length) {
             const selectedTagsArr = (await resultSetTags).map(data => data.tags);
             const selectedTagsStr = JSON.stringify(selectedTagsArr);
             const selectedTags = selectedTagsStr.substr(1, selectedTagsStr.length - 2);
-            payload.issues.tags = selectedTags.replace(/"/g, "");
+            payload.issue.tags = selectedTags.replace(/"/g, "");
           }
         }
-  
+
         const { issue } = payload;
         const storedIssue = await manager.getRepository(Issues).save(issue);
 
         if (storedIssue && storedIssue.created_at) {
           const { id_user } = await this.tokenService.findByToken(payload.token);
+          
           const postPaylaod = {
-            id_issue: storedIssue.id_issue,
-            context: payload.context,
+            id_issue: storedIssue.id,
+            context: payload.post.context,
             id_author: id_user
           }
-  
+
           const storedPost = await this.postService.store(postPaylaod);
-  
-          if(storedPost && storedPost.created_at) {
+
+          if (storedPost && storedPost.created_at) {
             resolve({ ...storedIssue, ...storedPost });
           }
         }
       }).catch(err => {
         const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-        throw new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível criar o Issue. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
+        throw new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível criar o Issue. Recarregue e tente novamente.' + err, title: 'Erro inesperado.', type: 'error', style });
       });
     });
 
@@ -75,6 +76,22 @@ export class IssuesService {
       const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
       throw new InternalServerErrorException({ statusCode: 500, message: 'Erro ao deletar Issue. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
     });
+  }
+
+  async deleteAll(): Promise<void> {
+    return getConnection().transaction(async manager => {
+      manager.getRepository(Issues).clear();
+    }).catch(err => {
+      const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+      throw new InternalServerErrorException({ statusCode: 500, message: 'Erro ao deletar Issue. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
+    });
+  }
+
+  async getGeneral(): Promise<any[] | undefined> {
+    return getConnection().createQueryBuilder('Issues', "entity")
+      .select('*')
+      .where("1=1 order by created_at ASC ")
+      .getMany();
   }
 
 

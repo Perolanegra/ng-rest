@@ -12,8 +12,7 @@ export class TokenService {
     @TransactionRepository(Token)
     @InjectRepository(Token)
     private tokenRepository: Repository<Token>,
-  ) {
-  }
+  ) { }
 
   async store(payload: { token: string, id_user: number }): Promise<any | undefined> {
     return await getConnection().transaction(async manager => {
@@ -22,6 +21,10 @@ export class TokenService {
       const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
       throw new InternalServerErrorException({ statusCode: 500, message: 'Recarregue a página e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
     });
+  }
+
+  getAll(): Promise<Token[]> {
+    return this.tokenRepository.find();
   }
 
   findByIdUser(id: number): Promise<Token | undefined> {
@@ -33,7 +36,7 @@ export class TokenService {
     });
   }
 
-  findByToken(access_token: string): Promise<Token | undefined> {
+  async findByToken(access_token: string): Promise<Token | undefined> {
     return getConnection().transaction(async manager => {
       return manager.getRepository(Token).findOne({ token: access_token });
     }).catch(err => {
