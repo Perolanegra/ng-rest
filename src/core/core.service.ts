@@ -20,10 +20,10 @@ export class CoreService {
 
     public authorize(req, title, errorMsg): UnauthorizedException | void {
         try {
-            const base_auth = req.headers.authorization;
-            if (!base_auth) throw new UnauthorizedException();
+            const { authorization } = req.headers;
+            if (!authorization) throw new UnauthorizedException();
 
-            const splitted = base_auth.split(' ');
+            const splitted = authorization.split(' ');
 
             const { ...tokenArr } = splitted;
             
