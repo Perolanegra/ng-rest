@@ -8,7 +8,9 @@ import { IssuesModule } from './issues/issues.module';
 import { PostModule } from './post/post.module';
 import { TagsModule } from './tags/tags.module';
 import { ConfigModule } from '@nestjs/config';
-
+import { IssuePollModule } from './issue-poll/issue-poll.module';
+import { IssuePollResponseModule } from './issue-poll-response/issue-poll-response.module';
+import { IssueTextContentModule } from './issue-text-content/issue-text-content.module';
 @Module({
   imports: [
     AuthModule,
@@ -52,6 +54,9 @@ import { ConfigModule } from '@nestjs/config';
     }),
     IssuesModule,
     PostModule,
+    IssuePollModule,
+    IssuePollResponseModule,
+    IssueTextContentModule,
     TagsModule
   ],
   providers: [AppService],

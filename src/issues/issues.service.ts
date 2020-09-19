@@ -39,12 +39,12 @@ export class IssuesService {
           }
         }
 
-        const { issue } = payload;
-        const storedIssue = await manager.getRepository(Issues).save(issue);
+        const { id_user } = await this.tokenService.findByToken(payload.token);
+        payload.id_user = id_user;
+
+        const storedIssue = await manager.getRepository(Issues).save(payload.issue);
 
         if (storedIssue && storedIssue.created_at) {
-          const { id_user } = await this.tokenService.findByToken(payload.token);
-          
           const postPaylaod = {
             id_issue: storedIssue.id,
             context: payload.post.context,

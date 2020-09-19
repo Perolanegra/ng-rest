@@ -1,15 +1,15 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
 @Entity()
-export class Post {
+export class IssuePollResponse {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: false })
-    id_issue: number;
-    
-    @Column({ nullable: false })
-    id_author: Number;
+    id_poll: number;
+
+    @Column({ nullable: false, type: 'varchar', length: 250 })
+    answer: string;
 
     @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;
