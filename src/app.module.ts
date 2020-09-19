@@ -40,7 +40,7 @@ import { ConfigModule } from '@nestjs/config';
         },
       },
       defaults: {
-        from: process.env.SMTP_MAILER_SOURCE,
+        from: `"No Reply" <${process.env.SMTP_MAILER_SOURCE}>`,
       },
       template: {
         dir: `${process.cwd()}/${process.env.SMTP_TEMPLATE_DIR}/`,

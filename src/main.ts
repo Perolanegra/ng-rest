@@ -7,7 +7,7 @@ import * as rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port = process.env.HTTP_PORT;
+  const port = process.env.PORT;
 
   app.use(helmet());
   app.enableCors({ origin: 'https://www.ng-forum.com/' })
