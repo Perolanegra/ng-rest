@@ -12,7 +12,6 @@ export class CoreService {
             this.jwtService.verify(token);
 
         } catch (error) {
-            // console.log('erro Origin: ', error);
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
             throw new UnauthorizedException({ statusCode: 401, message: errMsg, title: errTitle, type: 'error', style });
         }
