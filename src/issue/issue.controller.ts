@@ -1,10 +1,10 @@
 
 import { Controller, Post, Body, Get, Request, Delete } from '@nestjs/common';
-import { IssuesService } from './issues.service';
+import { IssueService } from './issue.service';
 
 @Controller()
-export class IssuesController {
-  constructor(private issService: IssuesService) { }
+export class IssueController {
+  constructor(private issService: IssueService) { }
 
   @Get('issues/list-general')
   async getGeneral() {

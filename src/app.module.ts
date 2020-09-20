@@ -4,7 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './user/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule, HandlebarsAdapter } from '@nestjs-modules/mailer';
-import { IssuesModule } from './issues/issues.module';
+import { IssueModule } from './issue/issue.module';
 import { PostModule } from './post/post.module';
 import { TagsModule } from './tags/tags.module';
 import { ConfigModule } from '@nestjs/config';
@@ -52,7 +52,7 @@ import { IssueTextContentModule } from './issue-text-content/issue-text-content.
         },
       },
     }),
-    IssuesModule,
+    IssueModule,
     PostModule,
     IssuePollModule,
     IssuePollResponseModule,

@@ -10,7 +10,7 @@ enum Stars {
 }
 
 @Entity()
-export class Issues {
+export class Issue {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -35,7 +35,7 @@ export class Issues {
     @Column({ nullable: false, default: '', type: 'varchar', length: 75 })
     tags: string;
 
-    @Column({ nullable: false, default: 0 })
+    @Column({ nullable: false, default: 1 })
     posts_number: Number;
 
     @Column({ nullable: false, default: false })

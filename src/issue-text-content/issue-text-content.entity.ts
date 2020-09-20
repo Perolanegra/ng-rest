@@ -12,7 +12,7 @@ export class IssueTextContent {
     id_issue: number;
     
     @Column({ nullable: false, type: 'text' })
-    content: string;
+    context: string;
 
     @Column({ nullable: false, default: false })
     enableNotifications: boolean;

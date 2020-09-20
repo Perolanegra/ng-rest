@@ -91,6 +91,25 @@ export class NgRepository {
             .where("entity.id in (:ids)", { ids: [...payload.ids] })
             .getMany();
     }
+
+    /**
+     * @author igor.alves
+     * @param entity Entidade em string a ser persistida
+     * @param payload Array de Objeto(s) da entidade com suas devidas propriedades para persistência dos dados.
+     * @param errorMsg Mensagem que deverá ser lançada caso a inserção de dados dê erro.
+     */
+    public storeMany(entity: string, payload: any, errorMsg: string): Promise<any | undefined> {
+        return getConnection()
+            .createQueryBuilder()
+            .insert()
+            .into(entity)
+            .values(payload)
+            .execute()
+            .catch(err => {
+                const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+                throw new InternalServerErrorException({ statusCode: 500, message: err, title: 'Erro inesperado.', type: 'error', style });
+            })
+    }
 }
 
 // return this.tagsRespository.find( { retornando tudo
