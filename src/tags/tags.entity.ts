@@ -8,7 +8,7 @@ export class Tags {
     id: number;
 
     @Column("enum", { enum: TagsEnum })
-    tags: TagsEnum;
+    value: TagsEnum;
 
     @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;
