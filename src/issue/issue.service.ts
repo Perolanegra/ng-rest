@@ -44,7 +44,7 @@ export class IssueService {
         const resultSetTags = await this.tagService.getByGivenIds(params);
 
         if (resultSetTags.length) {
-          const selectedTagsArr = (await resultSetTags).map(data => data.tags);
+          const selectedTagsArr = (await resultSetTags).map(data => data.value);
           const selectedTagsStr = JSON.stringify(selectedTagsArr);
           const selectedTags = selectedTagsStr.substr(1, selectedTagsStr.length - 2);
           issue.tags = selectedTags.replace(/"/g, "");
