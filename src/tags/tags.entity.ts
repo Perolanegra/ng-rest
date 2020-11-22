@@ -7,7 +7,7 @@ export class Tags {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column("enum", { enum: TagsEnum })
+    @Column("enum", { enum: TagsEnum, unique: true })
     value: TagsEnum;
 
     @Column({ type: 'timestamp', default: () => "current_timestamp" })

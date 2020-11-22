@@ -51,7 +51,7 @@ export class AuthService {
                 expiresIn: '7m',
             });
 
-            const url = `${process.env.URL_FRONT || 'http://localhost:4200/'}#/reset-password;bnag=${access_token}`;
+            const url = `${process.env.URL_FRONT}#/reset-password;bnag=${access_token}`;
 
             await this.tokenService.store({ token: access_token, id_user: id });
 

@@ -1,5 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
+/**
+ * Entidade referente a cada post do Issue
+ */
 @Entity()
 export class IssueTextContent {
     @PrimaryGeneratedColumn()

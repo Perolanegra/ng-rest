@@ -10,7 +10,7 @@ async function bootstrap() {
   const port = process.env.PORT;
 
   app.use(helmet());
-  app.enableCors({ origin: 'https://www.ng-forum.com/' })
+  app.enableCors({ origin: process.env.URL_FRONT })
   // var corsOptions = {
   //   origin: 'https://www.ng-forum.com',
   //   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204

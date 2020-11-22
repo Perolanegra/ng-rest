@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
-
+/**
+ * Entidade referente as respostas da Enquete
+ */
 @Entity()
 export class IssuePollResponse {
     @PrimaryGeneratedColumn()

@@ -35,13 +35,13 @@ export class IssueService {
         const { issue, token } = payload;
 
         if (!issue.id_tags.length) throw new Error('Bad Request, parâmetros inválidos');
-        const params = {
+        const payloadTags = {
           entity: 'Tags',
           ids: issue.id_tags,
           output: 'entity.tags'
         };
 
-        const resultSetTags = await this.tagService.getByGivenIds(params);
+        const resultSetTags = await this.tagService.getByGivenIds(payloadTags);
 
         if (resultSetTags.length) {
           const selectedTagsArr = (await resultSetTags).map(data => data.value);
@@ -55,7 +55,7 @@ export class IssueService {
 
         const storedIssue: Issue = await manager.getRepository(Issue).save(issue);
 
-        const storedPost: Post = await this.storePost(id_user, storedIssue.id);
+        const storedPost: Post = await this.postService.store({ id_author: id_user, id_issue: storedIssue.id });
 
         const response = issue.typeSurveyContent ? await this.storePoll(issue.content, storedPost.id, storedIssue.id)
           : await this.storeTextContent(issue.content, storedPost.id, storedIssue.id);
@@ -70,15 +70,6 @@ export class IssueService {
 
   getAll(): Promise<Issue[]> {
     return this.repository.getAll('Issues'); // por o paginate por 15, kda request.
-  }
-
-  private storePost(id_user: number, id_storedIssue: number) {
-    const postPaylaod = {
-      id_author: id_user,
-      id_issue: id_storedIssue
-    }
-
-    return this.postService.store(postPaylaod);
   }
 
   private async storePoll(payload, id_storedPost: number, id_storedIssue: number): Promise<IssuePollResponse | any> {

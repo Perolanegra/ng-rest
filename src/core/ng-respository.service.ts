@@ -110,6 +110,12 @@ export class NgRepository {
                 throw new InternalServerErrorException({ statusCode: 500, message: err, title: 'Erro inesperado.', type: 'error', style });
             })
     }
+
+    public getEntityFields(payload: any) {
+        return getConnection().createQueryBuilder(payload.entity, "entity")
+            .select(payload.output)
+            .getMany();
+    }
 }
 
 // return this.tagsRespository.find( { retornando tudo
