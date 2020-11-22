@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { Issue } from './issue.entity';
 import { getConnection, TransactionRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,6 +16,8 @@ import { IssueTextContent } from 'src/issue-text-content/issue-text-content.enti
 @Injectable()
 export class IssueService {
 
+  private readonly logger = new Logger(IssueService.name);
+
   constructor(
     @TransactionRepository(Issue)
     @InjectRepository(Issue)
@@ -29,6 +31,7 @@ export class IssueService {
     private repository: NgRepository) { }
 
   async store(payload: any): Promise<any | undefined> {
+    this.logger.log(`Persistência Store Issue: ${payload}`);
     return new Promise((resolve, reject) => {
       getConnection().transaction(async manager => {
 
