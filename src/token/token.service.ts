@@ -15,12 +15,14 @@ export class TokenService {
   ) { }
 
   async store(payload: { token: string, id_user: number }): Promise<any | undefined> {
-    return await getConnection().transaction(async manager => {
-      manager.getRepository(Token).save(payload);
-    }).catch(err => {
-      const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-      throw new InternalServerErrorException({ statusCode: 500, message: 'Recarregue a página e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
-    });
+    return new Promise((resolve, reject) => {
+      getConnection().transaction(async manager => {
+        resolve(await manager.getRepository(Token).save(payload));
+      }).catch(err => {
+        const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+        reject(new InternalServerErrorException({ statusCode: 500, message: 'Recarregue a página e tente novamente.', err, title: 'Operação indisponível.', type: 'error', style }));
+      });
+    })
   }
 
   getAll(): Promise<Token[]> {
@@ -45,7 +47,7 @@ export class TokenService {
     });
   }
 
-  
+
 
 
 }

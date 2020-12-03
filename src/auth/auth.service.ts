@@ -34,9 +34,13 @@ export class AuthService {
     }
 
     async login(user: any) { // o parametro user eh o retorno do localstrategy validate
-        return {
-            access_token: this.jwtService.sign(user)
-        };
+        try {
+            const response = { access_token: this.jwtService.sign(user, { expiresIn: '7h' }) };
+            await this.tokenService.store({ token: response.access_token, id_user: user.id }); // grava o token da sessão
+            return response;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async sendCredentialsEmail(payload) {
@@ -91,11 +95,11 @@ export class AuthService {
     public async signUp({ name, username, pass, email }): Promise<any | undefined> {
         try {
             const password = await bcrypt.hash(pass, 10);
-            await this.usersService.store({ name, username, password, email });
+            const userStored = await this.usersService.store({ name, username, password, email });
 
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
 
-            return { statusCode: 201, message: 'Verifique sua conta através do link que enviamos para seu email.', title: 'Conta Criada.', type: 'success', style };
+            return { statusCode: 201, message: 'Conta criada com Sucesso.', title: 'Conta Criada.', type: 'success', style };
         } catch (error) {
             throw error;
         }

@@ -41,7 +41,7 @@ export class IssueService {
         const payloadTags = {
           entity: 'Tags',
           ids: issue.id_tags,
-          output: 'entity.tags'
+          output: 'entity.value'
         };
 
         const resultSetTags = await this.tagService.getByGivenIds(payloadTags);
@@ -52,8 +52,9 @@ export class IssueService {
           const selectedTags = selectedTagsStr.substr(1, selectedTagsStr.length - 2);
           issue.tags = selectedTags.replace(/"/g, "");
         }
-
-        const { id_user } = await this.tokenService.findByToken(token);
+        
+        const resultSetToken = await this.tokenService.findByToken(token);
+        const { id_user } = resultSetToken;
         issue.id_user = id_user;
 
         const storedIssue: Issue = await manager.getRepository(Issue).save(issue);
@@ -66,7 +67,7 @@ export class IssueService {
         resolve(response);
       }).catch(err => {
         const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-        throw new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível criar o Issue. Recarregue e tente novamente.' + err, title: 'Erro inesperado.', type: 'error', style });
+        reject(new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível criar o Issue. Recarregue e tente novamente.' + err, title: 'Erro inesperado.', type: 'error', style }));
       });
     });
   }

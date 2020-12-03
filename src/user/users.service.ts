@@ -55,12 +55,14 @@ export class UsersService {
   }
 
   async store(payload): Promise<any | undefined> {
-    return getConnection().transaction(async manager => {
-      await manager.getRepository(User).save(payload);
-    }).catch(err => {
-      const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-      throw new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível realizar o cadastro. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
-    });
+    return new Promise((resolve, reject) => {
+      getConnection().transaction(async manager => {
+        resolve(await manager.getRepository(User).save(payload));
+      }).catch(err => {
+        const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+        reject(new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível realizar o cadastro. Recarregue e tente novamente.', err, title: 'Erro inesperado.', type: 'error', style }));
+      });
+    })
   }
 
 }
