@@ -26,8 +26,11 @@ export class Issue {
     @Column({ nullable: false, type: 'varchar', length: 25 })
     author: string;
 
-    @Column("enum", { enum: Stars, default: Stars.ZERO })
-    stars: Stars;
+    @Column({ nullable: false, default: Stars.ZERO })
+    stars: Number;
+
+    @Column({ nullable: false, default: Stars.ZERO })
+    pplVoted: Number;
 
     @Column({ nullable: false, default: Stars.ZERO }) // setar +1 view por acc diff
     views: Number;

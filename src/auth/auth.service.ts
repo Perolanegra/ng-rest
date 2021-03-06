@@ -78,10 +78,11 @@ export class AuthService {
 
     public async setResetPassword(password: string, req): Promise<any | undefined> {
         try {
-            const { id_user } = await this.tokenService.findByToken(req.headers.authorization);
+            const tokenData = await this.tokenService.findByToken(req.headers.authorization.slice(7));
+            
             const encrypted = await bcrypt.hash(password, 10);
 
-            await this.usersService.resetPassword(encrypted, id_user);
+            await this.usersService.resetPassword(encrypted, tokenData.id_user);
 
             const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
 

@@ -22,6 +22,11 @@ export class IssueController {
     return this.issService.store(payload);
   }
 
+  @Post('/store/stars')
+  async updateStars(@Request() req, @Body('payload') payload: any) {
+    return this.issService.updateStars(payload);
+  }
+
   // @Delete('issues/delete')
   // async delete() {
   //   this.issService.deleteAll();

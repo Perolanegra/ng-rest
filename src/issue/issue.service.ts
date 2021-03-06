@@ -13,6 +13,7 @@ import { IssueTextContentService } from 'src/issue-text-content/issue-text-conte
 import { IssuePollResponse } from 'src/issue-poll-response/issue-poll-response.entity';
 import { IssueTextContent } from 'src/issue-text-content/issue-text-content.entity';
 
+const IssueEntity: string = 'Issue';
 @Injectable()
 export class IssueService {
 
@@ -73,7 +74,7 @@ export class IssueService {
   }
 
   getAll(): Promise<Issue[]> {
-    return this.repository.getAll('Issues'); // por o paginate por 15, kda request.
+    return this.repository.getAll(IssueEntity); // TODO: por o paginate por 15, kda request.
   }
 
   private async storePoll(payload, id_storedPost: number, id_storedIssue: number): Promise<IssuePollResponse | any> {
@@ -101,6 +102,10 @@ export class IssueService {
     textContent.id_issue = id_storedIssue;
 
     return this.issueTextContentService.store(textContent);
+  }
+
+  async updateStars(payload: { id: number, values }): Promise<any> {
+    return this.repository.update(IssueEntity, payload, 'Erro ao votar.');
   }
 
   async deleteById(req, id: number): Promise<void> {

@@ -26,7 +26,7 @@ export class NgRepository {
             }).catch(err => {
                 console.log('erro Store: ', err);
                 const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-                throw new InternalServerErrorException({ statusCode: 500, message: errorMsg, title: 'Erro inesperado.', type: 'error', style });
+                reject(new InternalServerErrorException({ statusCode: 500, message: errorMsg, title: 'Erro inesperado.', type: 'error', style }));
             });
         });
     }
@@ -50,7 +50,7 @@ export class NgRepository {
                 resolve(updated);
             }).catch(err => {
                 const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-                throw new InternalServerErrorException({ statusCode: 500, message: errorMsg, title: 'Erro inesperado.', type: 'error', style });
+                reject(new InternalServerErrorException({ statusCode: 500, message: errorMsg, title: 'Erro inesperado.', type: 'error', style }));
             });
         });
     }
@@ -65,7 +65,7 @@ export class NgRepository {
                 resolve(deleted);
             }).catch(err => {
                 const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-                throw new InternalServerErrorException({ statusCode: 500, message: errorMsg, title: 'Erro inesperado.', type: 'error', style });
+                reject(new InternalServerErrorException({ statusCode: 500, message: errorMsg, title: 'Erro inesperado.', type: 'error', style }));
             });
         });
     }
