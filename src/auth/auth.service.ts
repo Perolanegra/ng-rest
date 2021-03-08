@@ -1,109 +1,189 @@
-import { Injectable, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/users.service';
 import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
 import * as bcrypt from 'bcryptjs';
 import { TokenService } from 'src/token/token.service';
+import { NgException } from 'src/core/exception/ng-exception';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private usersService: UsersService,
-        private ngMailer: NgMailerService,
-        private tokenService: TokenService,
-        private jwtService: JwtService) { }
+  constructor(
+    private usersService: UsersService,
+    private ngMailer: NgMailerService,
+    private tokenService: TokenService,
+    private jwtService: JwtService,
+  ) {}
 
-    async validateUser(username: string, pass: string): Promise<any> {
-        const user = await this.usersService.findByUser(username);
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.usersService.findByUser(username);
 
-        if (!user) {
-            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-            throw new UnauthorizedException({ statusCode: 401, message: 'Usuário inexistente.', title: 'Dados Inválidos.', type: 'error', style });
-        }
-
-        const { password, id_nivel, created_at, updated_at, deleted_at, ...result } = user;
-
-        const isEqual = await this.passwordsAreEqual(pass, password);
-
-        if (!isEqual) {
-            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-            throw new UnauthorizedException({ statusCode: 401, message: 'Senha incorreta. Tente novamente ou clique em "Esqueceu a senha?" para redefini-la.', title: 'Dados Inválidos.', type: 'error', style });
-        }
-
-        return result;
+    if (!user) {
+      throw new NgException(
+        UnauthorizedException,
+        'Usuário não encontrado.',
+        'Acesso não autorizado',
+      ).exception;
     }
 
-    async login(user: any) { // o parametro user eh o retorno do localstrategy validate
-        try {
-            const response = { access_token: this.jwtService.sign(user, { expiresIn: '7h' }) };
-            await this.tokenService.store({ token: response.access_token, id_user: user.id }); // grava o token da sessão
-            return response;
-        } catch (error) {
-            throw error;
-        }
+    const {
+      password,
+      id_nivel,
+      created_at,
+      updated_at,
+      deleted_at,
+      ...result
+    } = user;
+
+    const isEqual = await this.passwordsAreEqual(pass, password);
+
+    if (!isEqual) {
+      throw new NgException(
+        UnauthorizedException,
+        'Senha incorreta. Tente novamente ou clique em "Esqueceu a senha?" para redefini-la.',
+        'Dados Inválidos',
+      ).exception;
     }
 
-    async sendCredentialsEmail(payload) {
-        try {
-            const user = await this.usersService.findByUsernameOrEmail(payload);
-            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+    return result;
+  }
 
-            if (!user) throw new UnauthorizedException({ statusCode: 401, message: 'Usuário não encontrado.', title: 'Dados Inválidos.', type: 'error', style });
-
-            const { id, email } = user;
-            const access_token = this.jwtService.sign({ username: user.username, password: user.password }, {
-                expiresIn: '7m',
-            });
-
-            const url = `${process.env.URL_FRONT}#/reset-password;bnag=${access_token}`;
-
-            await this.tokenService.store({ token: access_token, id_user: id });
-
-            const respMail = await this.ngMailer.sendPasswordEmail({ email, url });
-
-            if (!respMail && respMail.rejected.length) {
-                throw new InternalServerErrorException({ statusCode: 500, message: 'E-mail não enviado. Recarregue e tente novamente.', title: 'Operação indisponível.', type: 'error', style });
-            }
-
-            return { statusCode: 201, message: 'Verifique sua caixa de email, enviamos um link para redefinição da senha.', title: 'E-mail Enviado.', type: 'success', style };
-
-        } catch (error) {
-            throw error;
-        }
+  async login(user: any) {
+    // o parametro user eh o retorno do localstrategy validate
+    try {
+      const response = {
+        access_token: this.jwtService.sign(user, { expiresIn: '7h' }),
+      };
+      await this.tokenService.store({
+        token: response.access_token,
+        id_user: user.id,
+      }); // grava o token da sessão
+      return response;
+    } catch (error) {
+      throw error;
     }
+  }
 
-    private passwordsAreEqual(plainPassword: string, hashedPassword: string): Promise<boolean> {
-        return bcrypt.compare(plainPassword, hashedPassword);
+  async sendCredentialsEmail(payload) {
+    try {
+      const user = await this.usersService.findByUsernameOrEmail(payload);
+
+      if (!user) {
+        throw new NgException(
+          UnauthorizedException,
+          'Usuário não encontrado.',
+          'Acesso não autorizado',
+        ).exception;
+      }
+
+      const { id, email } = user;
+      const access_token = this.jwtService.sign(
+        { username: user.username, password: user.password },
+        {
+          expiresIn: '7m',
+        },
+      );
+
+      const url = `${process.env.URL_FRONT}#/reset-password;bnag=${access_token}`;
+
+      await this.tokenService.store({ token: access_token, id_user: id });
+
+      const respMail = await this.ngMailer.sendPasswordEmail({ email, url });
+
+      if (!respMail && respMail.rejected.length) {
+        throw new NgException(
+          InternalServerErrorException,
+          'E-mail não enviado. Recarregue e tente novamente.',
+          'Operação Indisponível',
+        ).exception;
+      }
+
+      return {
+        statusCode: 201,
+        message:
+          'Verifique sua caixa de email, enviamos um link para redefinição da senha.',
+        title: 'E-mail Enviado.',
+        type: 'success',
+      };
+    } catch (error) {
+      throw error;
     }
+  }
 
-    public async setResetPassword(password: string, req): Promise<any | undefined> {
-        try {
-            const tokenData = await this.tokenService.findByToken(req.headers.authorization.slice(7));
-            
-            const encrypted = await bcrypt.hash(password, 10);
+  private passwordsAreEqual(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(plainPassword, hashedPassword);
+  }
 
-            await this.usersService.resetPassword(encrypted, tokenData.id_user);
+  public async setResetPassword(
+    password: string,
+    req,
+  ): Promise<any | undefined> {
+    try {
+      const tokenData = await this.tokenService.findByToken(
+        req.headers.authorization.slice(7),
+      );
 
-            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+      const encrypted = await bcrypt.hash(password, 10);
 
-            return { statusCode: 201, message: 'Senha redefinida com sucesso. Realize o login novamente.', title: 'Senha Redefinida.', type: 'success', style };
+      await this.usersService.resetPassword(encrypted, tokenData.id_user);
 
-        } catch (error) {
-            throw error;
-        }
+      const style = {
+        posTop: '5vh',
+        posBottom: null,
+        posLeft: null,
+        posRight: null,
+      };
+
+      return {
+        statusCode: 201,
+        message: 'Senha redefinida com sucesso. Realize o login novamente.',
+        title: 'Senha Redefinida.',
+        type: 'success',
+        style,
+      };
+    } catch (error) {
+      throw error;
     }
+  }
 
-    public async signUp({ name, username, pass, email }): Promise<any | undefined> {
-        try {
-            const password = await bcrypt.hash(pass, 10);
-            const userStored = await this.usersService.store({ name, username, password, email });
+  public async signUp({
+    name,
+    username,
+    pass,
+    email,
+  }): Promise<any | undefined> {
+    try {
+      const password = await bcrypt.hash(pass, 10);
+      const userStored = await this.usersService.store({
+        name,
+        username,
+        password,
+        email,
+      });
 
-            const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
+      const style = {
+        posTop: '5vh',
+        posBottom: null,
+        posLeft: null,
+        posRight: null,
+      };
 
-            return { statusCode: 201, message: 'Conta criada com Sucesso.', title: 'Conta Criada.', type: 'success', style };
-        } catch (error) {
-            throw error;
-        }
+      return {
+        statusCode: 201,
+        message: 'Conta criada com Sucesso.',
+        title: 'Conta Criada.',
+        type: 'success',
+        style,
+      };
+    } catch (error) {
+      throw error;
     }
-
+  }
 }

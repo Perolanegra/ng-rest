@@ -11,10 +11,16 @@ import { ConfigModule } from '@nestjs/config';
 import { IssuePollModule } from './issue-poll/issue-poll.module';
 import { IssuePollResponseModule } from './issue-poll-response/issue-poll-response.module';
 import { IssueTextContentModule } from './issue-text-content/issue-text-content.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 @Module({
   imports: [
     AuthModule,
     UsersModule,
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 2,
+    }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: process.env.TYPEORM_CONNECTION as any,
@@ -59,6 +65,12 @@ import { IssueTextContentModule } from './issue-text-content/issue-text-content.
     IssueTextContentModule,
     TagsModule
   ],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    }
+  ],
 })
-export class AppModule {}
+export class AppModule { }

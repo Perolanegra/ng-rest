@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  BadRequestException,
+} from '@nestjs/common';
 import { Issue } from './issue.entity';
 import { getConnection, TransactionRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,64 +17,96 @@ import { IssuePollResponseService } from 'src/issue-poll-response/issue-poll-res
 import { IssueTextContentService } from 'src/issue-text-content/issue-text-content.service';
 import { IssuePollResponse } from 'src/issue-poll-response/issue-poll-response.entity';
 import { IssueTextContent } from 'src/issue-text-content/issue-text-content.entity';
+import { NgException } from 'src/core/exception/ng-exception';
 
 const IssueEntity: string = 'Issue';
 @Injectable()
 export class IssueService {
-
   private readonly logger = new Logger(IssueService.name);
 
   constructor(
     @TransactionRepository(Issue)
     @InjectRepository(Issue)
-    private issueRespository: Repository<Issue>,
     private tagService: TagsService,
     private tokenService: TokenService,
     private postService: PostService,
     private issuePollService: IssuePollService,
     private issuePollResponseService: IssuePollResponseService,
     private issueTextContentService: IssueTextContentService,
-    private repository: NgRepository) { }
+    private repository: NgRepository,
+  ) {}
 
   async store(payload: any): Promise<any | undefined> {
     this.logger.log(`Persistência Store Issue: ${payload}`);
     return new Promise((resolve, reject) => {
-      getConnection().transaction(async manager => {
+      getConnection()
+        .transaction(async manager => {
+          const { issue, token } = payload;
 
-        const { issue, token } = payload;
+          if (!issue.id_tags.length) {
+            throw new NgException(
+              BadRequestException,
+              'Parâmetros Inválidos.',
+              'Erro inesperado',
+              'id_tags is []',
+            ).exception;
+          }
 
-        if (!issue.id_tags.length) throw new Error('Bad Request, parâmetros inválidos');
-        const payloadTags = {
-          entity: 'Tags',
-          ids: issue.id_tags,
-          output: 'entity.value'
-        };
+          const payloadTags = {
+            entity: 'Tags',
+            ids: issue.id_tags,
+            output: 'entity.value',
+          };
 
-        const resultSetTags = await this.tagService.getByGivenIds(payloadTags);
+          const resultSetTags = await this.tagService.getByGivenIds(
+            payloadTags,
+          );
 
-        if (resultSetTags.length) {
-          const selectedTagsArr = (await resultSetTags).map(data => data.value);
-          const selectedTagsStr = JSON.stringify(selectedTagsArr);
-          const selectedTags = selectedTagsStr.substr(1, selectedTagsStr.length - 2);
-          issue.tags = selectedTags.replace(/"/g, "");
-        }
-        
-        const resultSetToken = await this.tokenService.findByToken(token);
-        const { id_user } = resultSetToken;
-        issue.id_user = id_user;
+          if (resultSetTags.length) {
+            const selectedTagsArr = (await resultSetTags).map(
+              data => data.value,
+            );
+            const selectedTagsStr = JSON.stringify(selectedTagsArr);
+            const selectedTags = selectedTagsStr.substr(
+              1,
+              selectedTagsStr.length - 2,
+            );
+            issue.tags = selectedTags.replace(/"/g, '');
+          }
 
-        const storedIssue: Issue = await manager.getRepository(Issue).save(issue);
+          const resultSetToken = await this.tokenService.findByToken(token);
+          const { id_user } = resultSetToken;
+          issue.id_user = id_user;
 
-        const storedPost: Post = await this.postService.store({ id_author: id_user, id_issue: storedIssue.id });
+          const storedIssue: Issue = await manager
+            .getRepository(Issue)
+            .save(issue);
 
-        const response = issue.typeSurveyContent ? await this.storePoll(issue.content, storedPost.id, storedIssue.id)
-          : await this.storeTextContent(issue.content, storedPost.id, storedIssue.id);
+          const storedPost: Post = await this.postService.store({
+            id_author: id_user,
+            id_issue: storedIssue.id,
+          });
 
-        resolve(response);
-      }).catch(err => {
-        const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-        reject(new InternalServerErrorException({ statusCode: 500, message: 'Não foi possível criar o Issue. Recarregue e tente novamente.' + err, title: 'Erro inesperado.', type: 'error', style }));
-      });
+          const response = issue.typeSurveyContent
+            ? await this.storePoll(issue.content, storedPost.id, storedIssue.id)
+            : await this.storeTextContent(
+                issue.content,
+                storedPost.id,
+                storedIssue.id,
+              );
+
+          resolve(response);
+        })
+        .catch(err => {
+          reject(
+            new NgException(
+              InternalServerErrorException,
+              'Não foi possível criar o Issue. Recarregue e tente novamente.',
+              'Erro inesperado',
+              err,
+            ).exception,
+          );
+        });
     });
   }
 
@@ -77,7 +114,11 @@ export class IssueService {
     return this.repository.getAll(IssueEntity); // TODO: por o paginate por 15, kda request.
   }
 
-  private async storePoll(payload, id_storedPost: number, id_storedIssue: number): Promise<IssuePollResponse | any> {
+  private async storePoll(
+    payload,
+    id_storedPost: number,
+    id_storedIssue: number,
+  ): Promise<IssuePollResponse | any> {
     const { formArrOpt, ...pollParams } = payload;
 
     const pollContent = Object.assign({}, pollParams);
@@ -96,7 +137,11 @@ export class IssueService {
     return this.issuePollResponseService.storeMany(issuePollResponsePayload);
   }
 
-  private storeTextContent(payload, id_storedPost: number, id_storedIssue: number): Promise<IssueTextContent | undefined> {
+  private storeTextContent(
+    payload,
+    id_storedPost: number,
+    id_storedIssue: number,
+  ): Promise<IssueTextContent | undefined> {
     const textContent = Object.assign({}, payload);
     textContent.id_post = id_storedPost;
     textContent.id_issue = id_storedIssue;
@@ -104,33 +149,53 @@ export class IssueService {
     return this.issueTextContentService.store(textContent);
   }
 
-  async updateStars(payload: { id: number, values }): Promise<any> {
+  async updateStars(payload: { id: number; values }): Promise<any> {
     return this.repository.update(IssueEntity, payload, 'Erro ao votar.');
   }
 
-  async deleteById(req, id: number): Promise<void> {
-    return getConnection().transaction(async manager => {
-      manager.getRepository(Issue).delete(id);
-    }).catch(err => {
-      const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-      throw new InternalServerErrorException({ statusCode: 500, message: 'Erro ao deletar Issue. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
+  async deleteById(req, id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      getConnection()
+        .transaction(async manager => {
+          resolve(manager.getRepository(Issue).delete(id));
+        })
+        .catch(err => {
+          reject(
+            new NgException(
+              InternalServerErrorException,
+              'Erro ao deletar Issue. Recarregue e tente novamente.',
+              'Erro inesperado',
+              err,
+            ).exception,
+          );
+        });
     });
   }
 
-  async deleteAll(): Promise<void> {
-    return getConnection().transaction(async manager => {
-      manager.getRepository(Issue).clear();
-    }).catch(err => {
-      const style = { positionTop: '5vh', positionBottom: null, positionLeft: null, positionRight: null };
-      throw new InternalServerErrorException({ statusCode: 500, message: 'Erro ao deletar Issue. Recarregue e tente novamente.', title: 'Erro inesperado.', type: 'error', style });
+  async deleteAll(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      getConnection()
+        .transaction(async manager => {
+          resolve(manager.getRepository(Issue).clear());
+        })
+        .catch(err => {
+          reject(
+            new NgException(
+              InternalServerErrorException,
+              'Erro ao deletar Issue. Recarregue e tente novamente.',
+              'Erro inesperado',
+              err,
+            ).exception,
+          );
+        });
     });
   }
 
   async getGeneral(): Promise<any[] | undefined> {
-    return getConnection().createQueryBuilder('Issue', "entity")
+    return getConnection()
+      .createQueryBuilder('Issue', 'entity')
       .select('*')
-      .where("1=1 order by created_at ASC ")
+      .where('1=1 order by created_at ASC ')
       .getMany();
   }
-
 }

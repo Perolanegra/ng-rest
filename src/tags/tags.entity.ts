@@ -10,6 +10,9 @@ export class Tags {
     @Column("enum", { enum: TagsEnum, unique: true })
     value: TagsEnum;
 
+    @Column({ default: '' })
+    color: string;
+
     @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;
 

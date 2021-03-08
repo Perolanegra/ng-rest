@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import "reflect-metadata";
 import * as helmet from 'helmet';
-import * as rateLimit from 'express-rate-limit';
+import { HttpExceptionFilter } from './core/exception/http-exception.filter';
 // const cors = require('cors');
 
 async function bootstrap() {
@@ -17,12 +17,13 @@ async function bootstrap() {
   // }
   // app.use(cors(corsOptions))
   // 
-  app.use(
-    rateLimit({
-      windowMs: 1 * 60 * 1000, // 1 minutes
-      max: 5, // limit each IP to 5 requests per windowMs
-    }),
-  );
+  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.use(
+  //   rateLimit({
+  //     windowMs: 1 * 60 * 1000, // 1 minutes
+  //     max: 5, // limit each IP to 5 requests per windowMs
+  //   }),
+  // );
 
   await app.listen(port, () => {
     port ? console.log(`Serving at port ${port}`)

@@ -29,6 +29,7 @@
     "@nestjs/jwt": "^7.0.0",
     "@nestjs/passport": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/throttler": "^1.1.1",
     "@nestjs/typeorm": "^7.0.0",
     "@types/amqplib": "^0.5.16",
     "amqp-connection-manager": "^3.2.1",
