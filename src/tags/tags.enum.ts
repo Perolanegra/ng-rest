@@ -1,7 +1,6 @@
 export enum TagsEnum {
     BUG = 'bug',
     IMPLEMENTATION = 'implementation',
-    NEW = 'created',
     CLOSED = 'closed',
     REOPEN = 'reopen',
     ERROR = 'error',
