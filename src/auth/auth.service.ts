@@ -106,7 +106,7 @@ export class AuthService {
         statusCode: 201,
         message:
           'Verifique sua caixa de email, enviamos um link para redefinição da senha.',
-        title: 'E-mail Enviado.',
+        title: 'E-mail Enviado',
         type: 'success',
       };
     } catch (error) {
@@ -144,7 +144,7 @@ export class AuthService {
       return {
         statusCode: 201,
         message: 'Senha redefinida com sucesso. Realize o login novamente.',
-        title: 'Senha Redefinida.',
+        title: 'Senha Redefinida',
         type: 'success',
         style,
       };
@@ -178,7 +178,7 @@ export class AuthService {
       return {
         statusCode: 201,
         message: 'Conta criada com Sucesso.',
-        title: 'Conta Criada.',
+        title: 'Conta Criada',
         type: 'success',
         style,
       };
