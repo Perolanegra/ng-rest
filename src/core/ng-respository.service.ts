@@ -32,6 +32,7 @@ export class NgRepository {
     payload: any,
     errorMsg: string,
   ): Promise<any | undefined> {
+    this.logger.log(`Persistência de dados: [Store ${entity}]`);
     // errorMsg ex: 'Não foi possível criar o Issue. Recarregue e tente novamente.'
     return new Promise((resolve, reject) => {
       getConnection()
@@ -54,21 +55,21 @@ export class NgRepository {
     });
   }
 
+  /**
+   *  payload = {
+   *      id: 5,
+   *      values: {
+   *          password: '12232',
+   *          name: 'dsad'
+   *      }
+   *  }
+   */
   public update(
     entity: string,
     payload: any,
     errorMsg: string,
   ): Promise<any | undefined> {
-    // errMsg ex: 'Não foi possível redefinir a senha. Recarregue e tente novamente.'
-    /**
-     *  payload = {
-     *      id: 5,
-     *      values: {
-     *          password: '12232',
-     *          name: 'dsad'
-     *      }
-     *  }
-     */
+    this.logger.log(`Persistência de dados: [Update ${entity}]`);
     return new Promise((resolve, reject) => {
       getConnection()
         .transaction(async manager => {
@@ -95,6 +96,7 @@ export class NgRepository {
     id: number,
     errorMsg: string,
   ): Promise<any | undefined> {
+    this.logger.log(`Persistência de dados: [Delete ${entity}]`);
     return new Promise((resolve, reject) => {
       getConnection()
         .transaction(async manager => {
@@ -121,6 +123,7 @@ export class NgRepository {
     id: number[];
     output: string;
   }): Promise<any | undefined> {
+    this.logger.log(`Transaction: [GetById ${payload.entity}]`);
     return getConnection()
       .createQueryBuilder(payload.entity, 'entity')
       .select(payload.output)
@@ -141,6 +144,7 @@ export class NgRepository {
     ids: number[];
     output: string;
   }): Promise<any[] | undefined> {
+    this.logger.log(`Transaction: [GetByIds ${payload.entity}]`);
     return getConnection()
       .createQueryBuilder(payload.entity, 'entity')
       .select(payload.output)
@@ -159,6 +163,7 @@ export class NgRepository {
     payload: any,
     errorMsg: string,
   ): Promise<any | undefined> {
+    this.logger.log(`Persistência de Dados: [StoreMany ${payload.entity}]`);
     return getConnection()
       .createQueryBuilder()
       .insert()
@@ -176,6 +181,7 @@ export class NgRepository {
   }
 
   public getEntityFields(payload: any) {
+    this.logger.log(`Transaction: [GetFields ${payload.entity}]`);
     return getConnection()
       .createQueryBuilder(payload.entity, 'entity')
       .select(payload.output)

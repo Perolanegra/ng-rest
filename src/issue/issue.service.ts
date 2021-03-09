@@ -34,7 +34,7 @@ export class IssueService {
     private issuePollResponseService: IssuePollResponseService,
     private issueTextContentService: IssueTextContentService,
     private repository: NgRepository,
-  ) {}
+  ) { }
 
   async store(payload: any): Promise<any | undefined> {
     this.logger.log(`Persistência Store Issue: ${payload}`);
@@ -53,13 +53,12 @@ export class IssueService {
           }
 
           const payloadTags = {
-            entity: 'Tags',
             ids: issue.id_tags,
             output: 'entity.value',
           };
 
           const resultSetTags = await this.tagService.getByGivenIds(
-            payloadTags,
+            payloadTags
           );
 
           if (resultSetTags.length) {
@@ -69,7 +68,7 @@ export class IssueService {
             const selectedTagsStr = JSON.stringify(selectedTagsArr);
             const selectedTags = selectedTagsStr.substr(
               1,
-              selectedTagsStr.length - 2,
+              selectedTagsStr.length - 2
             );
             issue.tags = selectedTags.replace(/"/g, '');
           }
@@ -84,16 +83,16 @@ export class IssueService {
 
           const storedPost: Post = await this.postService.store({
             id_author: id_user,
-            id_issue: storedIssue.id,
+            id_issue: storedIssue.id
           });
 
           const response = issue.typeSurveyContent
             ? await this.storePoll(issue.content, storedPost.id, storedIssue.id)
             : await this.storeTextContent(
-                issue.content,
-                storedPost.id,
-                storedIssue.id,
-              );
+              issue.content,
+              storedPost.id,
+              storedIssue.id
+            );
 
           resolve(response);
         })
@@ -103,7 +102,7 @@ export class IssueService {
               InternalServerErrorException,
               'Não foi possível criar o Issue. Recarregue e tente novamente.',
               'Erro inesperado',
-              err,
+              err
             ).exception,
           );
         });

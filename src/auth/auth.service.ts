@@ -161,7 +161,7 @@ export class AuthService {
   }): Promise<any | undefined> {
     try {
       const password = await bcrypt.hash(pass, 10);
-      const userStored = await this.usersService.store({
+      await this.usersService.store({
         name,
         username,
         password,
@@ -178,7 +178,7 @@ export class AuthService {
       return {
         statusCode: 201,
         message: 'Conta criada com Sucesso.',
-        title: 'Conta Criada',
+        title: 'Cadastro Realizado',
         type: 'success',
         style,
       };

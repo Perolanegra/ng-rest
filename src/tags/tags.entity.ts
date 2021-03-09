@@ -1,7 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 import { TagsEnum } from './tags.enum';
-
-
 @Entity()
 export class Tags {
     @PrimaryGeneratedColumn()

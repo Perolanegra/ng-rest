@@ -1,5 +1,5 @@
 
-import { Controller, Post, Body, Request, Get } from '@nestjs/common';
+import { Controller, Request, Get } from '@nestjs/common';
 import { TagsService } from './tags.service';
 
 @Controller()
