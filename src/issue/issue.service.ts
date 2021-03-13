@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Issue } from './issue.entity';
-import { getConnection, TransactionRepository, Repository } from 'typeorm';
+import { getConnection, TransactionRepository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagsService } from 'src/tags/tags.service';
 import { NgRepository } from 'src/core/ng-respository.service';

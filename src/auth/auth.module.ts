@@ -37,6 +37,7 @@ export class AuthModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .exclude(
+        { path: 'auth/login', method: RequestMethod.POST },
         { path: 'auth/sign-up', method: RequestMethod.POST },
         { path: 'auth/forgot-pass', method: RequestMethod.POST },
         { path: 'index', method: RequestMethod.GET },
