@@ -52,8 +52,8 @@ export class AuthService {
     return result;
   }
 
+  // o param user eh o retorno do localstrategy validate
   async login(user: any) {
-    // o parametro user eh o retorno do localstrategy validate
     try {
       const response = {
         access_token: this.jwtService.sign(user, { expiresIn: '7h' }),

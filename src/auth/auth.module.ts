@@ -27,7 +27,7 @@ import { AuthMiddleware } from 'src/core/auth-middleware';
     }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '28800s' }, // 8 horas
+      signOptions: { expiresIn: '7h' }, // 7 horas
     }),
   ],
   exports: [AuthService, PassportModule, LocalStrategy, JwtModule],
