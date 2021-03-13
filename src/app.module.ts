@@ -18,8 +18,8 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     AuthModule,
     UsersModule,
     ThrottlerModule.forRoot({
-      ttl: Number(process.env.TIME_TO_LIVE),
-      limit: Number(process.env.LIMIT),
+      ttl: 60,
+      limit: 7
     }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
