@@ -180,7 +180,7 @@ export class NgRepository {
       });
   }
 
-  public getEntityFields(payload: any) {
+  public getEntityFields(payload: any): Promise<any[] | undefined> {
     this.logger.log(`Transaction: [GetFields ${payload.entity}]`);
     return getConnection()
       .createQueryBuilder(payload.entity, 'entity')
