@@ -25,8 +25,6 @@ export class IssueService {
   private readonly logger = new Logger(IssueService.name);
 
   constructor(
-    @TransactionRepository(Issue)
-    @InjectRepository(Issue)
     private tagService: TagsService,
     private tokenService: TokenService,
     private postService: PostService,
@@ -34,9 +32,9 @@ export class IssueService {
     private issuePollResponseService: IssuePollResponseService,
     private issueTextContentService: IssueTextContentService,
     private repository: NgRepository,
-  ) { }
+  ) {}
 
-  async store(payload: any): Promise<any | undefined> {
+  store(payload: any): Promise<any | undefined> {
     this.logger.log(`Persistência Store Issue: ${payload}`);
     return new Promise((resolve, reject) => {
       getConnection()
@@ -57,9 +55,7 @@ export class IssueService {
             output: 'entity.value',
           };
 
-          const resultSetTags = await this.tagService.getByGivenIds(
-            payloadTags
-          );
+          const resultSetTags = await this.tagService.getByGivenIds(payloadTags);
 
           if (resultSetTags.length) {
             const selectedTagsArr = (await resultSetTags).map(
@@ -68,7 +64,7 @@ export class IssueService {
             const selectedTagsStr = JSON.stringify(selectedTagsArr);
             const selectedTags = selectedTagsStr.substr(
               1,
-              selectedTagsStr.length - 2
+              selectedTagsStr.length - 2,
             );
             issue.tags = selectedTags.replace(/"/g, '');
           }
@@ -83,18 +79,18 @@ export class IssueService {
 
           const storedPost: Post = await this.postService.store({
             id_author: id_user,
-            id_issue: storedIssue.id
+            id_issue: storedIssue.id,
           });
 
-          const response = issue.typeSurveyContent
+          issue.typeSurveyContent
             ? await this.storePoll(issue.content, storedPost.id, storedIssue.id)
             : await this.storeTextContent(
-              issue.content,
-              storedPost.id,
-              storedIssue.id
-            );
+                issue.content,
+                storedPost.id,
+                storedIssue.id,
+              );
 
-          resolve(response);
+          resolve(storedIssue);
         })
         .catch(err => {
           reject(
@@ -102,7 +98,7 @@ export class IssueService {
               InternalServerErrorException,
               'Não foi possível criar o Issue. Recarregue e tente novamente.',
               'Erro inesperado',
-              err
+              err,
             ).exception,
           );
         });
@@ -117,7 +113,7 @@ export class IssueService {
     payload,
     id_storedPost: number,
     id_storedIssue: number,
-  ): Promise<IssuePollResponse | any> {
+  ): Promise<IssuePollResponse | undefined> {
     const { formArrOpt, ...pollParams } = payload;
 
     const pollContent = Object.assign({}, pollParams);
@@ -130,7 +126,7 @@ export class IssueService {
     const issuePollResponsePayload: Array<any> = [];
 
     (formArrOpt as Array<string>).forEach((answer: string) => {
-      issuePollResponsePayload.push({ id_poll: id, answer: answer });
+      issuePollResponsePayload.push({ id_poll: id, answer });
     });
 
     return this.issuePollResponseService.storeMany(issuePollResponsePayload);
@@ -150,6 +146,15 @@ export class IssueService {
 
   async updateStars(payload: { id: number; values }): Promise<any> {
     return this.repository.update(IssueEntity, payload, 'Erro ao votar.');
+  }
+
+  async getDetailsById(payload: { id: number }): Promise<Issue | {}> {
+    const issue = this.repository.getById({
+      entity: IssueEntity,
+      id: payload.id,
+    });
+
+    return new Promise(null);
   }
 
   async deleteById(req, id: number): Promise<any> {

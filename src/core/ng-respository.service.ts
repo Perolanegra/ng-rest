@@ -118,38 +118,68 @@ export class NgRepository {
     });
   }
 
-  public getById(payload: {
-    entity: string;
-    id: number[];
-    output: string;
-  }): Promise<any | undefined> {
+  // public getById2(payload: {
+  //   entity: string;
+  //   id: number;
+  //   output: string;
+  // }): Promise<any | undefined> {
+  //   this.logger.log(`Transaction: [GetById ${payload.entity}]`);
+  //   return getConnection()
+  //     .createQueryBuilder(payload.entity, 'entity')
+  //     .select(payload.output)
+  //     .where('entity.id = :id', { id: payload.id })
+  //     .getOne();
+  // }
+
+  public getById(payload: { entity: string; id: number }): Promise<any | {}> {
     this.logger.log(`Transaction: [GetById ${payload.entity}]`);
     return getConnection()
-      .createQueryBuilder(payload.entity, 'entity')
-      .select(payload.output)
-      .where('entity.id in =:id', { id: payload.id })
-      .getOne();
+      .manager.getRepository(payload.entity)
+      .findOne(payload.id);
   }
 
-  /**
-   *
-   * @param payload objeto que define as características do resultSet.
-   * @param payload.entity stringParam da Entidade que será executada a query.
-   * @param payload.ids ids que serão buscados.
-   * @param payload.output colunas que serão retornadas em string, seguindo padrão: 'entity.column1, entity.column2'.
-   * @author igor.alves
-   */
-  public getEntityByGivenIds(payload: {
+  // /**
+  //  *
+  //  * @param payload objeto que define as características do resultSet.
+  //  * @param payload.entity stringParam da Entidade que será executada a query.
+  //  * @param payload.ids ids que serão buscados.
+  //  * @param payload.output colunas que serão retornadas em string, seguindo padrão: 'entity.column1, entity.column2'.
+  //  * @author igor.alves
+  //  */
+  // public getEntityByGivenIds(payload: {
+  //   entity: string;
+  //   ids: number[];
+  //   output: string;
+  // }): Promise<any[] | undefined> {
+  //   this.logger.log(`Transaction: [GetByIds ${payload.entity}]`);
+  //   return getConnection()
+  //     .createQueryBuilder(payload.entity, 'entity')
+  //     .select(payload.output)
+  //     .where('entity.id in (:ids)', { ids: [...payload.ids] })
+  //     .getMany();
+  // }
+
+  async getEntityByGivenIds(payload: {
     entity: string;
     ids: number[];
     output: string;
   }): Promise<any[] | undefined> {
-    this.logger.log(`Transaction: [GetByIds ${payload.entity}]`);
-    return getConnection()
-      .createQueryBuilder(payload.entity, 'entity')
-      .select(payload.output)
-      .where('entity.id in (:ids)', { ids: [...payload.ids] })
-      .getMany();
+    return new Promise((resolve, reject) => {
+      getConnection()
+        .transaction(async manager => {
+          resolve(manager.getRepository(payload.entity).findByIds(payload.ids));
+        })
+        .catch(err => {
+          reject(
+            new NgException(
+              InternalServerErrorException,
+              'Recarregue e tente novamente mais tarde.',
+              'Erro inesperado',
+              err,
+            ).exception,
+          );
+        });
+    });
   }
 
   /**
@@ -163,7 +193,7 @@ export class NgRepository {
     payload: any,
     errorMsg: string,
   ): Promise<any | undefined> {
-    this.logger.log(`Persistência de Dados: [StoreMany ${payload.entity}]`);
+    this.logger.log(`Persistência de dados: [StoreMany ${entity}]`);
     return getConnection()
       .createQueryBuilder()
       .insert()
