@@ -149,13 +149,15 @@ export class IssueService {
     return this.repository.update(IssueEntity, payload, 'Erro ao votar.');
   }
 
-  async getDetailsById(payload: { id: number }): Promise<Issue | {}> {
+  async getDetailsById(payload: { id: number, hasPoll: string }): Promise<Issue | {}> {
     const features = SQL.issue.features as Array<any>;
-    const sql = features.find(feature => feature['getDetailsById']);
+    const searchFeature = payload.hasPoll === 'true' ? 'getPollDetailsById' : 'getDetailsById';
+    const sql = features.find(feature => feature[searchFeature]);
+    
     return this.repository.getByGivenQuery({
       entity: IssueEntity,
       errorMsg: 'Erro ao recuperar o Issue. Tente novamente.',
-      sql: (sql.getDetailsById as string).concat(` ${payload.id}`),
+      sql: (sql[searchFeature] as string).concat(` ${payload.id}`),
     });
   }
 
