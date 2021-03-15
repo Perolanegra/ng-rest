@@ -12,17 +12,34 @@ export class PostService {
     private issTxtContent: IssueTextContentService,
   ) {}
 
-  public async store(payload: any): Promise<Post | undefined> {
-    const storedPost: Post = await this.repository.store(
+  public store(payload: any): Promise<Post | undefined> {
+    return this.repository.store(
       PostEntity,
       payload,
       'Não foi possível adicionar o Post. Tente novamente.',
     );
-    
+  }
+
+  public async add(payload: any): Promise<Post | undefined> {
+    const postPayload = {
+      id_issue: payload.id_issue,
+      id_author: payload.id_author
+    };
+    const storedPost: Post = await this.repository.store(
+      PostEntity,
+      postPayload,
+      'Não foi possível adicionar o Post. Tente novamente.',
+    );
+
     // como eu so adiciono post do tipo textContent
-    payload.content['id_issue'] = payload['id_issue'];
-    payload.content['id_post'] = storedPost.id;
-    await this.issTxtContent.store(payload.content);
+    const contentPayload = {
+      id_post: storedPost.id,
+      id_issue: payload.id_issue,
+      context: payload.context,
+      enableNotifications: payload.enableNotifications
+    }
+
+    await this.issTxtContent.store(contentPayload);
 
     return storedPost;
   }

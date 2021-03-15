@@ -41,7 +41,7 @@ export class NgRepository {
           const storedPayload = await manager
             .getRepository(entity)
             .save(payload);
-          resolve({ success: HttpStatus.OK });
+          resolve(storedPayload);
         })
         .catch(err => {
           reject(
@@ -238,16 +238,21 @@ export class NgRepository {
     errorMsg: string;
   }): Promise<any[] | undefined> {
     this.logger.log(`Recuperando Dados: [GetByGivenQuery ${payload.entity}]`);
-    return getConnection()
-      .manager.query(payload.sql)
-      .catch(err => {
-        throw new NgException(
-          InternalServerErrorException,
-          payload.errorMsg,
-          'Erro Inesperado',
-          err,
-        ).exception;
-      });
+    return new Promise((resolve, reject) => {
+      getConnection()
+        .manager.query(payload.sql)
+        .then((data: any) => resolve(data))
+        .catch(err => {
+          reject(
+            new NgException(
+              InternalServerErrorException,
+              payload.errorMsg,
+              'Erro Inesperado',
+              err,
+            ).exception,
+          );
+        });
+    });
   }
 }
 

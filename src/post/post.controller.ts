@@ -6,9 +6,9 @@ import { PostService } from './post.service';
 export class PostController {
   constructor(private postService: PostService) { }
 
-  @Post('/store')
+  @Post('/add')
   async addIssue(@Body('payload') payload: any) {
-    return this.postService.store(payload);
+    return this.postService.add(payload);
   }
  
 

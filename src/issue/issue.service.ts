@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Issue } from './issue.entity';
-import { getConnection, getManager } from 'typeorm';
+import { getConnection } from 'typeorm';
 import { TagsService } from 'src/tags/tags.service';
 import { NgRepository } from 'src/core/ng-respository.service';
 import { PostService } from 'src/post/post.service';
@@ -56,7 +56,9 @@ export class IssueService {
             output: 'entity.value',
           };
 
-          const resultSetTags = await this.tagService.getByGivenIds(payloadTags);
+          const resultSetTags = await this.tagService.getByGivenIds(
+            payloadTags,
+          );
 
           if (resultSetTags.length) {
             const selectedTagsArr = (await resultSetTags).map(
@@ -77,12 +79,12 @@ export class IssueService {
           const storedIssue: Issue = await manager
             .getRepository(Issue)
             .save(issue);
-
+            
           const storedPost: Post = await this.postService.store({
             id_author: id_user,
             id_issue: storedIssue.id,
           });
-
+          
           issue.typeSurveyContent
             ? await this.storePoll(issue.content, storedPost.id, storedIssue.id)
             : await this.storeTextContent(
@@ -149,16 +151,45 @@ export class IssueService {
     return this.repository.update(IssueEntity, payload, 'Erro ao votar.');
   }
 
-  async getDetailsById(payload: { id: number, hasPoll: string }): Promise<Issue | {}> {
+  async getDetailsById(payload: { id: number }): Promise<Issue | {}> {
     const features = SQL.issue.features as Array<any>;
-    const searchFeature = payload.hasPoll === 'true' ? 'getPollDetailsById' : 'getDetailsById';
-    const sql = features.find(feature => feature[searchFeature]);
-    
+    const sql = features.find(feature => feature['getDetailsById']);
+
     return this.repository.getByGivenQuery({
       entity: IssueEntity,
       errorMsg: 'Erro ao recuperar o Issue. Tente novamente.',
-      sql: (sql[searchFeature] as string).concat(` ${payload.id}`),
+      sql: (sql['getDetailsById'] as string).concat(` ${payload.id}`),
     });
+  }
+
+  async getPollDetailById(payload: { id: number }): Promise<any | undefined> {
+    const features = SQL.issue.features as Array<any>;
+    const sql = features.find(feature => feature['getPollDetailsById']);
+
+    const pollDetails = await this.repository.getByGivenQuery({
+      entity: IssueEntity,
+      errorMsg: 'Erro ao recuperar os detalhes da enquete. Tente novamente.',
+      sql: (sql['getPollDetailsById'] as string).concat(` ${payload.id}`),
+    });
+
+    if (!pollDetails.length) {
+      throw new NgException(
+        InternalServerErrorException,
+        'A Enquete não foi encontrada. Por favor, Recarregue e tente novamente.',
+        'Erro Inesperado',
+      ).exception;
+    }
+
+    const details = pollDetails[0];
+    const arrAnswer: Array<{
+      answer: string;
+    }> = await this.issuePollResponseService.getAnswersByIdIssue(payload);
+    details.answers = new Array<string>();
+    arrAnswer.forEach((el: { answer: string }) => {
+      details.answers.push(el.answer);
+    });
+
+    return details;
   }
 
   async deleteById(req, id: number): Promise<any> {
