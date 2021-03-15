@@ -1,5 +1,5 @@
 
-import { Controller, Post, Body, Get, Request, Delete, Param, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Request, Param } from '@nestjs/common';
 import { IssueService } from './issue.service';
 
 @Controller('issues')
@@ -28,13 +28,13 @@ export class IssueController {
   }
 
   @Get('/detail/:id')
-  async getDetailById(@Param('id') id: string, @Req() req: any) {
+  async getDetailById(@Param('id') id: string) {
     const parsedId = Number(id);
     return this.issService.getDetailsById({ id: parsedId });
   }
 
   @Get('/detail/poll/:id')
-  async getPollDetailById(@Param('id') id: string, @Req() req: any) {
+  async getPollDetailById(@Param('id') id: string) {
     const parsedId = Number(id);
     return this.issService.getPollDetailById({ id: parsedId });
   }
