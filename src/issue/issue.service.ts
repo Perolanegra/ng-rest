@@ -151,28 +151,38 @@ export class IssueService {
     return this.repository.update(IssueEntity, payload, 'Erro ao votar.');
   }
 
-  async getDetailsById(payload: { id: number }): Promise<Issue | {}> {
+  async getDetailsById(payload: { id: number }): Promise<any | undefined> {
     const features = SQL.issue.features as Array<any>;
     const sql = features.find(feature => feature['getDetailsById']);
 
-    return this.repository.getByGivenQuery({
+    const details = await this.repository.getByGivenQuery({
       entity: IssueEntity,
-      errorMsg: 'Erro ao recuperar o Issue. Tente novamente.',
+      errorMsg: 'Erro ao recuperar os detalhes do Issue. Tente novamente.',
       sql: (sql['getDetailsById'] as string).concat(` ${payload.id}`),
     });
+
+    if (!details.length) {
+      throw new NgException(
+        InternalServerErrorException,
+        'O Issue não foi encontrado. Por favor, Recarregue e tente novamente.',
+        'Erro Inesperado',
+      ).exception;
+    }
+
+    return details;
   }
 
   async getPollDetailById(payload: { id: number }): Promise<any | undefined> {
     const features = SQL.issue.features as Array<any>;
     const sql = features.find(feature => feature['getPollDetailsById']);
 
-    const pollDetails = await this.repository.getByGivenQuery({
+    const pollDetailsArr = await this.repository.getByGivenQuery({
       entity: IssueEntity,
       errorMsg: 'Erro ao recuperar os detalhes da enquete. Tente novamente.',
       sql: (sql['getPollDetailsById'] as string).concat(` ${payload.id}`),
     });
 
-    if (!pollDetails.length) {
+    if (!pollDetailsArr.length) {
       throw new NgException(
         InternalServerErrorException,
         'A Enquete não foi encontrada. Por favor, Recarregue e tente novamente.',
@@ -180,16 +190,16 @@ export class IssueService {
       ).exception;
     }
 
-    const details = pollDetails[0];
+    const pollDetails = pollDetailsArr[0];
     const arrAnswer: Array<{
       answer: string;
     }> = await this.issuePollResponseService.getAnswersByIdIssue(payload);
-    details.answers = new Array<string>();
+    pollDetails.answers = new Array<string>();
     arrAnswer.forEach((el: { answer: string }) => {
-      details.answers.push(el.answer);
+      pollDetails.answers.push(el.answer);
     });
 
-    return details;
+    return pollDetails;
   }
 
   async deleteById(req, id: number): Promise<any> {
