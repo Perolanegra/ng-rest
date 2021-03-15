@@ -5,8 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Issue } from './issue.entity';
-import { getConnection, TransactionRepository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { getConnection, getManager } from 'typeorm';
 import { TagsService } from 'src/tags/tags.service';
 import { NgRepository } from 'src/core/ng-respository.service';
 import { PostService } from 'src/post/post.service';
@@ -18,6 +17,8 @@ import { IssueTextContentService } from 'src/issue-text-content/issue-text-conte
 import { IssuePollResponse } from 'src/issue-poll-response/issue-poll-response.entity';
 import { IssueTextContent } from 'src/issue-text-content/issue-text-content.entity';
 import { NgException } from 'src/core/exception/ng-exception';
+// @ts-ignore
+import * as SQL from 'assets/sql/sql.json';
 
 const IssueEntity: string = 'Issue';
 @Injectable()
@@ -149,12 +150,13 @@ export class IssueService {
   }
 
   async getDetailsById(payload: { id: number }): Promise<Issue | {}> {
-    const issue = this.repository.getById({
+    const features = SQL.issue.features as Array<any>;
+    const sql = features.find(feature => feature['getDetailsById']);
+    return this.repository.getByGivenQuery({
       entity: IssueEntity,
-      id: payload.id,
+      errorMsg: 'Erro ao recuperar o Issue. Tente novamente.',
+      sql: (sql.getDetailsById as string).concat(` ${payload.id}`),
     });
-
-    return new Promise(null);
   }
 
   async deleteById(req, id: number): Promise<any> {

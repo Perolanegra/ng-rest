@@ -63,7 +63,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     IssuePollModule,
     IssuePollResponseModule,
     IssueTextContentModule,
-    TagsModule
+    TagsModule,
   ],
   providers: [
     AppService,

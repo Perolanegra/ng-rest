@@ -12,17 +12,6 @@ export class PostService {
     private issTxtContent: IssueTextContentService,
   ) {}
 
-  public getByIssueId(payload: {
-    id_issue: number;
-  }): Promise<any[] | undefined> {
-    return getConnection()
-      .createQueryBuilder(PostEntity, 'entity')
-      .select('*')
-      .where('entity.id_issue in =:id', { id: payload.id_issue })
-      .orderBy('entity.created_at ASC')
-      .getMany();
-  }
-
   public async store(payload: any): Promise<Post | undefined> {
     const storedPost: Post = await this.repository.store(
       PostEntity,

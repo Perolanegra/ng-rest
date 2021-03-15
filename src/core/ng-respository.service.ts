@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  HttpStatus,
 } from '@nestjs/common';
 import { getConnection } from 'typeorm';
 import { NgException } from './exception/ng-exception';
@@ -40,7 +41,7 @@ export class NgRepository {
           const storedPayload = await manager
             .getRepository(entity)
             .save(payload);
-          resolve(storedPayload);
+          resolve({ success: HttpStatus.OK });
         })
         .catch(err => {
           reject(
@@ -215,7 +216,38 @@ export class NgRepository {
     return getConnection()
       .createQueryBuilder(payload.entity, 'entity')
       .select(payload.output)
+      .where(payload.condition || '1=1')
       .getMany();
+  }
+
+  /**
+   *
+   * @param payload objeto seguinte: { entity: 'string', query: { id: 'value', author: 'value' } }
+   */
+  public getOneByGivenParams(payload: any): Promise<any | undefined> {
+    return getConnection()
+      .manager.getRepository(payload.entity)
+      .findOne({
+        where: payload.query,
+      });
+  }
+
+  public getByGivenQuery(payload: {
+    entity: string;
+    sql: string;
+    errorMsg: string;
+  }): Promise<any[] | undefined> {
+    this.logger.log(`Recuperando Dados: [GetByGivenQuery ${payload.entity}]`);
+    return getConnection()
+      .manager.query(payload.sql)
+      .catch(err => {
+        throw new NgException(
+          InternalServerErrorException,
+          payload.errorMsg,
+          'Erro Inesperado',
+          err,
+        ).exception;
+      });
   }
 }
 
