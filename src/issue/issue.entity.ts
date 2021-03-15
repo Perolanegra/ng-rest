@@ -35,8 +35,11 @@ export class Issue {
     @Column({ nullable: false, default: Stars.ZERO }) // setar +1 view por acc diff
     views: Number;
 
-    @Column({ nullable: false, default: '', type: 'varchar', length: 75 })
+    @Column({ nullable: false, default: '', type: 'varchar', length: 400 })
     tags: string;
+
+    @Column({ nullable: false, default: '', type: 'varchar', length: 455 })
+    tag_colors: string;
 
     @Column({ nullable: false, default: 1 })
     posts_number: Number;

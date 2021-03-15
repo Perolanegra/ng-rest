@@ -61,15 +61,23 @@ export class IssueService {
           );
 
           if (resultSetTags.length) {
-            const selectedTagsArr = (await resultSetTags).map(
-              data => data.value,
-            );
-            const selectedTagsStr = JSON.stringify(selectedTagsArr);
-            const selectedTags = selectedTagsStr.substr(
-              1,
-              selectedTagsStr.length - 2,
-            );
-            issue.tags = selectedTags.replace(/"/g, '');
+            let tags = '',
+              colors = '';
+
+            for (let i = 0; i < (await resultSetTags).length; i++) {
+              tags =
+                i === resultSetTags.length - 1
+                  ? tags.concat(resultSetTags[i].value)
+                  : tags.concat(resultSetTags[i].value).concat(',');
+
+              colors =
+                i === resultSetTags.length - 1
+                  ? colors.concat(resultSetTags[i].color)
+                  : colors.concat(resultSetTags[i].color).concat(',');
+            }
+
+            issue.tags = tags;
+            issue.tag_colors = colors;
           }
 
           const resultSetToken = await this.tokenService.findByToken(token);
@@ -79,12 +87,12 @@ export class IssueService {
           const storedIssue: Issue = await manager
             .getRepository(Issue)
             .save(issue);
-            
+
           const storedPost: Post = await this.postService.store({
             id_author: id_user,
             id_issue: storedIssue.id,
           });
-          
+
           issue.typeSurveyContent
             ? await this.storePoll(issue.content, storedPost.id, storedIssue.id)
             : await this.storeTextContent(
