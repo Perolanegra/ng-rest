@@ -11,6 +11,9 @@ export class Post {
     @Column({ nullable: false })
     id_author: Number;
 
+    @Column({ nullable: false })
+    author: string;
+
     @Column({ default: 0 })
     stars: Number;
 

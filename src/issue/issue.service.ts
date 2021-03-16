@@ -91,6 +91,7 @@ export class IssueService {
           const storedPost: Post = await this.postService.store({
             id_author: id_user,
             id_issue: storedIssue.id,
+            author: issue.author
           });
 
           issue.typeSurveyContent

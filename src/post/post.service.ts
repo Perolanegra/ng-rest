@@ -23,7 +23,8 @@ export class PostService {
   public async add(payload: any): Promise<Post | undefined> {
     const postPayload = {
       id_issue: payload.id_issue,
-      id_author: payload.id_author
+      id_author: payload.id_author,
+      author: payload.author
     };
     const storedPost: Post = await this.repository.store(
       PostEntity,
