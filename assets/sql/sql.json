@@ -14,5 +14,12 @@
                 "getAnswersByIdIssue": "SELECT issPollResponse.answer FROM  issue_poll issPoll\ninner join issue_poll_response issPollResponse on issPollResponse.id_poll in (issPoll.id)\nwhere issPoll.id_issue = "
             }
         ]
+    },
+    "post": {
+        "features": [
+            {
+                "getCountByIdAuthor": "SELECT count(pst.id) as user_post_number from post pst where pst.id_author ="
+            }
+        ]
     }
 }

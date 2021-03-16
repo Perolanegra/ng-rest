@@ -12,8 +12,8 @@ export class User {
   @Column({ default: '' })
   password: string;
 
-  @Column({ default: 4 })
-  id_nivel: number;
+  @Column({ default: 5 })
+  id_perfil: number;
 
   @Column({ nullable: false, length: 25, type: 'varchar' })
   name: string;

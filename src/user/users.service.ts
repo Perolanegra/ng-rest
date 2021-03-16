@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository, TransactionRepository, getConnection } from 'typeorm';
 import { NgException } from 'src/core/exception/ng-exception';
+import { PostService } from 'src/post/post.service';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +12,14 @@ export class UsersService {
     @TransactionRepository(User)
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private postService: PostService
   ) {}
+
+  public async getDetails(payload: any): Promise<any | undefined> {
+    const postNumber = await this.postService.getCountByIdAuthor({ id_author: payload.id });
+    payload['user_post_number'] = postNumber['user_post_number'];
+    return payload;
+  }
 
   async findByUser(username: string): Promise<User | undefined> {
     return this.usersRepository.findOne({ where: { username: username } });

@@ -3,9 +3,17 @@ import { UsersService } from './users.service';
 import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
+import { PostService } from 'src/post/post.service';
+import { NgRepository } from 'src/core/ng-respository.service';
+import { IssueTextContentService } from 'src/issue-text-content/issue-text-content.service';
 
 @Module({
-  providers: [UsersService],
+  providers: [
+    UsersService,
+    NgRepository,
+    IssueTextContentService,
+    PostService
+  ],
   exports: [UsersService, TypeOrmModule],
   controllers: [UserController],
   imports: [

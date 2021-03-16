@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   InternalServerErrorException,
+  HttpStatus,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/users.service';
@@ -9,6 +10,7 @@ import { NgMailerService } from 'src/core/mailer/ng-mailer.service';
 import * as bcrypt from 'bcryptjs';
 import { TokenService } from 'src/token/token.service';
 import { NgException } from 'src/core/exception/ng-exception';
+import { HttpResponseData } from 'src/core/http-response-data-structure';
 
 @Injectable()
 export class AuthService {
@@ -30,14 +32,7 @@ export class AuthService {
       ).exception;
     }
 
-    const {
-      password,
-      id_nivel,
-      created_at,
-      updated_at,
-      deleted_at,
-      ...result
-    } = user;
+    const { password, ...result } = user;
 
     const isEqual = await this.passwordsAreEqual(pass, password);
 
@@ -102,13 +97,12 @@ export class AuthService {
         ).exception;
       }
 
-      return {
-        statusCode: 201,
-        message:
-          'Verifique sua caixa de email, enviamos um link para redefinição da senha.',
+      return new HttpResponseData({
+        msg: 'Verifique sua caixa de email, enviamos um link para redefinição da senha.',
         title: 'E-mail Enviado',
-        type: 'success',
-      };
+        statusCode: HttpStatus.CREATED
+      }).response;
+
     } catch (error) {
       throw error;
     }
@@ -134,20 +128,11 @@ export class AuthService {
 
       await this.usersService.resetPassword(encrypted, tokenData.id_user);
 
-      const style = {
-        posTop: '5vh',
-        posBottom: null,
-        posLeft: null,
-        posRight: null,
-      };
-
-      return {
-        statusCode: 201,
-        message: 'Senha redefinida com sucesso. Realize o login novamente.',
+      return new HttpResponseData({
+        msg: 'Senha redefinida com sucesso. Realize o login novamente.',
         title: 'Senha Redefinida',
-        type: 'success',
-        style,
-      };
+        statusCode: HttpStatus.CREATED
+      }).response;
     } catch (error) {
       throw error;
     }
@@ -168,20 +153,12 @@ export class AuthService {
         email,
       });
 
-      const style = {
-        posTop: '5vh',
-        posBottom: null,
-        posLeft: null,
-        posRight: null,
-      };
-
-      return {
-        statusCode: 201,
-        message: 'Conta criada com Sucesso.',
+      return new HttpResponseData({
+        msg: 'Conta criada com Sucesso.',
         title: 'Cadastro Realizado',
-        type: 'success',
-        style,
-      };
+        statusCode: HttpStatus.CREATED
+      }).response;
+
     } catch (error) {
       throw error;
     }

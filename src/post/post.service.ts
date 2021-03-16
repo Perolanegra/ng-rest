@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { NgRepository } from 'src/core/ng-respository.service';
-import { getConnection } from 'typeorm';
 import { Post } from './post.entity';
 import { IssueTextContentService } from 'src/issue-text-content/issue-text-content.service';
+// @ts-ignore
+import * as SQL from 'assets/sql/sql.json';
+import { NgException } from 'src/core/exception/ng-exception';
 
 const PostEntity: string = 'Post';
 @Injectable()
@@ -24,7 +26,7 @@ export class PostService {
     const postPayload = {
       id_issue: payload.id_issue,
       id_author: payload.id_author,
-      author: payload.author
+      author: payload.author,
     };
     const storedPost: Post = await this.repository.store(
       PostEntity,
@@ -37,11 +39,34 @@ export class PostService {
       id_post: storedPost.id,
       id_issue: payload.id_issue,
       context: payload.context,
-      enableNotifications: payload.enableNotifications
-    }
+      enableNotifications: payload.enableNotifications,
+    };
 
     await this.issTxtContent.store(contentPayload);
 
     return storedPost;
+  }
+
+  public async getCountByIdAuthor(payload: {
+    id_author: string;
+  }): Promise<{ user_post_number: string } | undefined> {
+    const features = SQL.post.features as Array<any>;
+    const sql = features.find(feature => feature['getCountByIdAuthor']);   
+
+    const postCountArr = await this.repository.getByGivenQuery({
+      entity: PostEntity,
+      errorMsg: 'Erro ao recuperar o seu número de postagens. Tente novamente.',
+      sql: (sql['getCountByIdAuthor'] as string).concat(` ${payload.id_author}`),
+    });
+
+    if (!postCountArr.length) {
+      throw new NgException(
+        InternalServerErrorException,
+        'Não foi possível contar suas postagens. Por favor, Recarregue e tente novamente.',
+        'Erro Inesperado',
+      ).exception;
+    }
+
+    return postCountArr[0];
   }
 }

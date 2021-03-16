@@ -236,11 +236,12 @@ export class NgRepository {
     entity: string;
     sql: string;
     errorMsg: string;
+    sqlParams?: any[]
   }): Promise<any[] | undefined> {
     this.logger.log(`Recuperando Dados: [GetByGivenQuery ${payload.entity}]`);
     return new Promise((resolve, reject) => {
       getConnection()
-        .manager.query(payload.sql)
+        .manager.query(payload.sql, payload.sqlParams)
         .then((data: any) => resolve(data))
         .catch(err => {
           reject(
