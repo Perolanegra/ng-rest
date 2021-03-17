@@ -12,8 +12,8 @@ export class User {
   @Column({ default: '' })
   password: string;
 
-  @Column({ default: 5 })
-  id_perfil: number;
+  @Column({ default: 2 })
+  id_role: number;
 
   @Column({ nullable: false, length: 25, type: 'varchar' })
   name: string;
@@ -38,6 +38,15 @@ export class User {
 
   @Column({ default: '' })
   birthDate: string;
+
+  @Column({ default: '' })
+  twitter: string;
+
+  @Column({ default: '' })
+  facebook: string;
+
+  @Column({ default: '' })
+  instagram: string;
 
   @Column({ type: 'timestamp', default: () => "current_timestamp" })
   created_at: Timestamp;

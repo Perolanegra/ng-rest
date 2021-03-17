@@ -1,3 +1,4 @@
+import { AccountModule } from './account/account.module';
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -17,9 +18,10 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
   imports: [
     AuthModule,
     UsersModule,
+    AccountModule,
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 7
+      limit: 7,
     }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
@@ -40,7 +42,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT, 10) || 465,
         ssl: process.env.SMTP_SSL === 'true',
-        secure: process.env.SMTP_SECURE === 'true',// true in case 465, false for other ports
+        secure: process.env.SMTP_SECURE === 'true', // true in case 465, false for other ports
         ignoreTLS: process.env.SMTP_SECURE !== 'false',
         auth: {
           user: process.env.SMTP_AUTH_USER,
@@ -69,8 +71,8 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     AppService,
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard
-    }
+      useClass: ThrottlerGuard,
+    },
   ],
 })
-export class AppModule { }
+export class AppModule {}

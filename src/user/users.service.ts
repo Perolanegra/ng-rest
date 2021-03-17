@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { Repository, TransactionRepository, getConnection } from 'typeorm';
 import { NgException } from 'src/core/exception/ng-exception';
 import { PostService } from 'src/post/post.service';
+import { UserSignUpDTO } from './dto/user-sign-up.dto';
 
 @Injectable()
 export class UsersService {
@@ -72,21 +73,4 @@ export class UsersService {
       });
   }
 
-  async store(payload): Promise<any | undefined> {
-    return new Promise((resolve, reject) => {
-      getConnection()
-        .transaction(async manager => {
-          resolve(await manager.getRepository(User).save(payload));
-        })
-        .catch(err => {
-          reject(
-            new NgException(
-              InternalServerErrorException,
-              'Não foi possível realizar o cadastro. Recarregue e tente novamente.',
-              'Erro inesperado',
-            ).exception,
-          );
-        });
-    });
-  }
 }

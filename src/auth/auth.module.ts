@@ -1,4 +1,9 @@
-import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from 'src/user/users.module';
 import { PassportModule } from '@nestjs/passport';
@@ -12,9 +17,20 @@ import { TokenModule } from 'src/token/token.module';
 import { AppService } from 'src/app.service';
 import { CoreService } from 'src/core/core.service';
 import { AuthMiddleware } from 'src/core/auth-middleware';
+import { AccountService } from 'src/account/account.service';
+import { NgRepository } from 'src/core/ng-respository.service';
 
 @Module({
-  providers: [AuthService, AppService, LocalStrategy, JwtStrategy, NgMailerService, CoreService],
+  providers: [
+    AuthService,
+    AppService,
+    LocalStrategy,
+    JwtStrategy,
+    NgMailerService,
+    CoreService,
+    AccountService,
+    NgRepository
+  ],
   controllers: [AuthController],
   imports: [
     UsersModule,
@@ -45,6 +61,3 @@ export class AuthModule implements NestModule {
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
-
-
-

@@ -3,6 +3,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/user/users.service';
@@ -11,14 +12,21 @@ import * as bcrypt from 'bcryptjs';
 import { TokenService } from 'src/token/token.service';
 import { NgException } from 'src/core/exception/ng-exception';
 import { HttpResponseData } from 'src/core/http-response-data-structure';
+import { AccountService } from 'src/account/account.service';
+import { getConnection } from 'typeorm';
+import { HttpResponseDataDTO } from 'src/core/dto/http-response-data.dto';
+import { User } from 'src/user/user.entity';
+import { UserSignUpDTO } from 'src/user/dto/user-sign-up.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private usersService: UsersService,
     private ngMailer: NgMailerService,
     private tokenService: TokenService,
     private jwtService: JwtService,
+    private accService: AccountService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -98,11 +106,11 @@ export class AuthService {
       }
 
       return new HttpResponseData({
-        msg: 'Verifique sua caixa de email, enviamos um link para redefinição da senha.',
+        msg:
+          'Verifique sua caixa de email, enviamos um link para redefinição da senha.',
         title: 'E-mail Enviado',
-        statusCode: HttpStatus.CREATED
+        statusCode: HttpStatus.CREATED,
       }).response;
-
     } catch (error) {
       throw error;
     }
@@ -131,36 +139,56 @@ export class AuthService {
       return new HttpResponseData({
         msg: 'Senha redefinida com sucesso. Realize o login novamente.',
         title: 'Senha Redefinida',
-        statusCode: HttpStatus.CREATED
+        statusCode: HttpStatus.CREATED,
       }).response;
     } catch (error) {
       throw error;
     }
   }
 
-  public async signUp({
+  public signUp({
     name,
     username,
-    pass,
+    password,
     email,
-  }): Promise<any | undefined> {
-    try {
-      const password = await bcrypt.hash(pass, 10);
-      await this.usersService.store({
-        name,
-        username,
-        password,
-        email,
-      });
+  }: UserSignUpDTO): Promise<HttpResponseDataDTO | undefined> {
+    return new Promise((resolve, reject) => {
+      getConnection()
+        .transaction(async manager => {
+          password = await bcrypt.hash(password, 10);
 
-      return new HttpResponseData({
-        msg: 'Conta criada com Sucesso.',
-        title: 'Cadastro Realizado',
-        statusCode: HttpStatus.CREATED
-      }).response;
+          const id = manager
+            .getRepository(User)
+            .save({
+              name,
+              username,
+              password,
+              email,
+            })
+            .then((user: User) => user.id)
+            .catch(err => {
+              throw new NgException(
+                InternalServerErrorException,
+                'Não foi possível realizar o cadastro do usuário. Recarregue e tente novamente.',
+                'Erro inesperado',
+                err,
+              ).exception;
+            });
+          this.logger.log(`Persistência de dados: [Store User]`);
 
-    } catch (error) {
-      throw error;
-    }
+          await this.accService.store((await id) as number);
+
+          resolve(
+            new HttpResponseData({
+              msg: 'Conta criada com Sucesso.',
+              title: 'Cadastro Realizado',
+              statusCode: HttpStatus.CREATED,
+            }).response,
+          );
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   }
 }

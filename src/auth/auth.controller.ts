@@ -3,6 +3,7 @@ import { Controller, Request, Post, UseGuards, Get, Body } from '@nestjs/common'
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
 import { AppService } from '../app.service';
+import { UserSignUpDTO } from 'src/user/dto/user-sign-up.dto';
 
 @Controller()
 export class AuthController {
@@ -31,7 +32,7 @@ export class AuthController {
   }
 
   @Post('auth/sign-up')
-  async signUp(@Body('payload') payload: { name:string, username: string, pass: string, email: string }) {
+  async signUp(@Body('payload') payload: UserSignUpDTO) {
     return this.authService.signUp(payload);
   }
 
