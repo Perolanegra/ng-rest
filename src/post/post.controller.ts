@@ -10,11 +10,6 @@ export class PostController {
   async addIssue(@Body('payload') payload: any) {
     return this.postService.add(payload);
   }
-
-  // @Get('/teste')
-  // async teste(@Req() req: any) {
-  //   return this.postService.getCountByIdAuthor({ id_author: req.query.id_author });
-  // }
  
 
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { NgRepository } from 'src/core/ng-respository.service';
+import { Account } from './account.entity';
 
 const AccountEntity: string = 'Account';
 

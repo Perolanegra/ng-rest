@@ -280,34 +280,8 @@ LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `query`
---
 
-DROP TABLE IF EXISTS `query`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `query` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `entity` varchar(255) NOT NULL,
-  `feature` varchar(255) NOT NULL,
-  `sql` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `deleted_at` varchar(255) NOT NULL DEFAULT '',
-  `updated_at` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `IDX_554607287e67584e3753388953` (`feature`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `query`
---
-
-LOCK TABLES `query` WRITE;
-/*!40000 ALTER TABLE `query` DISABLE KEYS */;
-/*!40000 ALTER TABLE `query` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `roles`

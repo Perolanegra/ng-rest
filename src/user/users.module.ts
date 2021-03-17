@@ -6,13 +6,15 @@ import { User } from './user.entity';
 import { PostService } from 'src/post/post.service';
 import { NgRepository } from 'src/core/ng-respository.service';
 import { IssueTextContentService } from 'src/issue-text-content/issue-text-content.service';
+import { AccountService } from 'src/account/account.service';
 
 @Module({
   providers: [
     UsersService,
     NgRepository,
     IssueTextContentService,
-    PostService
+    PostService,
+    AccountService
   ],
   exports: [UsersService, TypeOrmModule],
   controllers: [UserController],

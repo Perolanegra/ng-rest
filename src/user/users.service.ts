@@ -4,7 +4,8 @@ import { User } from './user.entity';
 import { Repository, TransactionRepository, getConnection } from 'typeorm';
 import { NgException } from 'src/core/exception/ng-exception';
 import { PostService } from 'src/post/post.service';
-import { UserSignUpDTO } from './dto/user-sign-up.dto';
+import { AccountService } from 'src/account/account.service';
+import { Account } from 'src/account/account.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,12 +14,15 @@ export class UsersService {
     @TransactionRepository(User)
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private postService: PostService
+    private postService: PostService,
+    private accService: AccountService
   ) {}
 
   public async getDetails(payload: any): Promise<any | undefined> {
+    const userAccounts: Account[] = await this.accService.getByIdUser(payload.id);
     const postNumber = await this.postService.getCountByIdAuthor({ id_author: payload.id });
     payload['user_post_number'] = postNumber['user_post_number'];
+    payload['user_accounts'] = userAccounts;
     return payload;
   }
 

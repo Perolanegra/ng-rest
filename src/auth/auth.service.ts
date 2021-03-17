@@ -17,6 +17,7 @@ import { getConnection } from 'typeorm';
 import { HttpResponseDataDTO } from 'src/core/dto/http-response-data.dto';
 import { User } from 'src/user/user.entity';
 import { UserSignUpDTO } from 'src/user/dto/user-sign-up.dto';
+import { Exception } from 'handlebars';
 
 @Injectable()
 export class AuthService {
@@ -156,7 +157,6 @@ export class AuthService {
       getConnection()
         .transaction(async manager => {
           password = await bcrypt.hash(password, 10);
-
           const id = manager
             .getRepository(User)
             .save({
@@ -174,8 +174,8 @@ export class AuthService {
                 err,
               ).exception;
             });
+            
           this.logger.log(`Persistência de dados: [Store User]`);
-
           await this.accService.store((await id) as number);
 
           resolve(
