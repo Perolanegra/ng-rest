@@ -9,10 +9,9 @@ export class AccountService {
   constructor(private ngRepository: NgRepository) {}
 
   public getByIdUser(id_user: number): Promise<Account[] | undefined> {
-    return this.ngRepository.getEntityByGivenIds({
+    return this.ngRepository.getByGivenParams({
       entity: AccountEntity,
-      ids: [id_user],
-      output: '',
+      query: { id_user: id_user },
     });
   }
 

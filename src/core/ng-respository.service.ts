@@ -168,7 +168,7 @@ export class NgRepository {
     return new Promise((resolve, reject) => {
       getConnection()
         .transaction(async manager => {
-          resolve(manager.getRepository(payload.entity).findByIds(payload.ids));
+          resolve(await manager.getRepository(payload.entity).findByIds(payload.ids));
         })
         .catch(err => {
           reject(
@@ -228,6 +228,18 @@ export class NgRepository {
     return getConnection()
       .manager.getRepository(payload.entity)
       .findOne({
+        where: payload.query,
+      });
+  }
+
+  /**
+   *
+   * @param payload objeto seguinte: { entity: 'string', query: { id: 'value', author: 'value' } }
+   */
+   public getByGivenParams(payload: any): Promise<any[] | undefined> {
+    return getConnection()
+      .manager.getRepository(payload.entity)
+      .find({
         where: payload.query,
       });
   }
