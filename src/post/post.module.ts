@@ -7,17 +7,9 @@ import { PostController } from './post.controller';
 import { IssueTextContentService } from 'src/issue-text-content/issue-text-content.service';
 
 @Module({
-  providers: [
-    PostService, 
-    NgRepository,
-    IssueTextContentService
-  ],
+  providers: [PostService, NgRepository, IssueTextContentService],
   exports: [PostService, TypeOrmModule],
-  controllers: [
-    PostController
-  ],
-  imports: [
-    TypeOrmModule.forFeature([Post])
-  ]
+  controllers: [PostController],
+  imports: [TypeOrmModule.forFeature([Post])],
 })
 export class PostModule {}

@@ -1,3 +1,4 @@
+import { RolesModule } from './roles/roles.module';
 import { AccountModule } from './account/account.module';
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
@@ -66,6 +67,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     IssuePollResponseModule,
     IssueTextContentModule,
     TagsModule,
+    RolesModule,
   ],
   providers: [
     AppService,

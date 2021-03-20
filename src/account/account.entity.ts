@@ -14,10 +14,9 @@ export class Account {
   @Column({ type: 'timestamp', default: () => "current_timestamp" })
   created_at: Timestamp;
 
-  @Column({ default: '' })
+  @Column({ default: null })
   deleted_at: string;
 
-  @Column({ default: '' })
+  @Column({ default: null })
   updated_at: string;
-
 }

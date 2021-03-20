@@ -12,7 +12,7 @@ export class User {
   @Column({ default: '' })
   password: string;
 
-  @Column({ default: 2 })
+  @Column({ default: 2, nullable: false })
   id_role: number;
 
   @Column({ nullable: false, length: 25, type: 'varchar' })
@@ -51,10 +51,10 @@ export class User {
   @Column({ type: 'timestamp', default: () => "current_timestamp" })
   created_at: Timestamp;
 
-  @Column({ default: '' })
+  @Column({ default: null })
   deleted_at: string;
 
-  @Column({ default: '' })
+  @Column({ default: null })
   updated_at: string;
 
   @BeforeInsert()
