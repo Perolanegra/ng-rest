@@ -48,6 +48,9 @@ export class User {
   @Column({ default: '' })
   instagram: string;
 
+  @Column({ default: 0 })
+  stars: Number;
+
   @Column({ type: 'timestamp', default: () => "current_timestamp" })
   created_at: Timestamp;
 

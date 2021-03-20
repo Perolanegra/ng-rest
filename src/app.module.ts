@@ -1,3 +1,5 @@
+import { UserTitlesModule } from './user-titles/user-titles.module';
+import { TitlesModule } from './titles/titles.module';
 import { RolesModule } from './roles/roles.module';
 import { AccountModule } from './account/account.module';
 import { Module } from '@nestjs/common';
@@ -35,7 +37,6 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
       acquireTimeout: 60 * 60 * 1000,
       connectTimeout: 60 * 60 * 1000,
       synchronize: process.env.TYPEORM_SYNCHRONIZE == 'true',
-      // autoLoadEntities: true,
     }),
     MailerModule.forRoot({
       transport: {
@@ -68,6 +69,8 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     IssueTextContentModule,
     TagsModule,
     RolesModule,
+    TitlesModule,
+    UserTitlesModule,
   ],
   providers: [
     AppService,
