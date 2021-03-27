@@ -30,7 +30,7 @@ CREATE TABLE `account` (
   `deleted_at` varchar(255) DEFAULT NULL,
   `updated_at` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +39,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (1,1,5,'2021-03-21 15:22:43',NULL,NULL);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,7 +94,7 @@ CREATE TABLE `issue` (
   `deleted_at` varchar(255) DEFAULT NULL,
   `updated_at` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,6 +103,7 @@ CREATE TABLE `issue` (
 
 LOCK TABLES `issue` WRITE;
 /*!40000 ALTER TABLE `issue` DISABLE KEYS */;
+INSERT INTO `issue` VALUES (1,1,'Can we just talk','Talk about where we going','perolanegra',0,0,0,'IMPLEMENTATION,REOPEN,ERROR','#22262e,#178ab4,#ff4444',1,0,'2021-03-21 15:40:22',NULL,NULL),(2,1,'I want it, i got it','I want it, i got it','perolanegra',0,0,0,'IMPLEMENTATION,CLOSED','#22262e,#a6a6a6',1,0,'2021-03-21 15:44:48',NULL,NULL),(3,1,'I want it, i got it','I want it, i got it','perolanegra',0,0,0,'IMPLEMENTATION,CLOSED','#22262e,#a6a6a6',1,0,'2021-03-21 15:45:02',NULL,NULL),(4,1,'I want it, i got it','I want it, i got it','perolanegra',0,0,0,'IMPLEMENTATION,CLOSED','#22262e,#a6a6a6',1,0,'2021-03-21 15:45:05',NULL,NULL),(5,1,'I want it, i got it','I want it, i got it','perolanegra',0,0,0,'IMPLEMENTATION,CLOSED','#22262e,#a6a6a6',1,0,'2021-03-21 15:45:05',NULL,NULL),(6,1,'I want it, i got it','I want it, i got it','perolanegra',0,0,0,'IMPLEMENTATION,CLOSED','#22262e,#a6a6a6',1,0,'2021-03-21 15:45:06',NULL,NULL),(7,1,'I want it, i got it','I want it, i got it','perolanegra',0,0,0,'IMPLEMENTATION,CLOSED','#22262e,#a6a6a6',1,0,'2021-03-21 15:45:12',NULL,NULL),(8,1,'Um novo Issue','Tstando o comportamento apos criar o Issue','perolanegra',0,0,0,'BUG,IMPLEMENTATION,QUESTION','crimson,#22262e,yellow',1,1,'2021-03-21 15:54:14',NULL,NULL),(9,1,'Titutlo GrandeTitutlo GrandeTitutlo GrandeTitutlo GrandeTitutlo GrandeTitut','SubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo Gra','perolanegra',0,0,0,'IMPLEMENTATION,CLOSED,ERROR','#22262e,#a6a6a6,#ff4444',1,0,'2021-03-21 18:37:13',NULL,NULL);
 /*!40000 ALTER TABLE `issue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -126,7 +128,7 @@ CREATE TABLE `issue_poll` (
   `deleted_at` varchar(255) DEFAULT NULL,
   `updated_at` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,6 +137,7 @@ CREATE TABLE `issue_poll` (
 
 LOCK TABLES `issue_poll` WRITE;
 /*!40000 ALTER TABLE `issue_poll` DISABLE KEYS */;
+INSERT INTO `issue_poll` VALUES (1,8,8,'2021-03-31T00:00:00.000Z','5:00 AM',0,1,'Tá Batendo a aplicação?','Primeira Enquete ?','2021-03-21 15:54:14',NULL,NULL);
 /*!40000 ALTER TABLE `issue_poll` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,7 +156,7 @@ CREATE TABLE `issue_poll_response` (
   `deleted_at` varchar(255) DEFAULT NULL,
   `updated_at` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,6 +165,7 @@ CREATE TABLE `issue_poll_response` (
 
 LOCK TABLES `issue_poll_response` WRITE;
 /*!40000 ALTER TABLE `issue_poll_response` DISABLE KEYS */;
+INSERT INTO `issue_poll_response` VALUES (1,1,'Sim','2021-03-21 15:54:14',NULL,NULL),(2,1,'Nem','2021-03-21 15:54:14',NULL,NULL),(3,1,'Meio Pog mas taá tendo','2021-03-21 15:54:14',NULL,NULL);
 /*!40000 ALTER TABLE `issue_poll_response` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,7 +186,7 @@ CREATE TABLE `issue_text_content` (
   `deleted_at` varchar(255) NOT NULL DEFAULT '',
   `updated_at` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,6 +195,7 @@ CREATE TABLE `issue_text_content` (
 
 LOCK TABLES `issue_text_content` WRITE;
 /*!40000 ALTER TABLE `issue_text_content` DISABLE KEYS */;
+INSERT INTO `issue_text_content` VALUES (1,1,1,'<h2>Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...</h2>\n',1,'2021-03-21 15:40:22','',''),(2,2,2,'<h2>Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...</h2>\n',1,'2021-03-21 15:44:48','',''),(3,3,3,'<h2>Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...</h2>\n',1,'2021-03-21 15:45:02','',''),(4,4,4,'<h2>Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...</h2>\n',1,'2021-03-21 15:45:05','',''),(5,5,5,'<h2>Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...</h2>\n',1,'2021-03-21 15:45:05','',''),(6,6,6,'<h2>Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...</h2>\n',1,'2021-03-21 15:45:06','',''),(7,7,7,'<h2>Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...Descreva seu Issue...</h2>\n',1,'2021-03-21 15:45:12','',''),(8,9,9,'<h2>SubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo GrandeSubTitutlo Grande</h2>\n',0,'2021-03-21 18:37:13','','');
 /*!40000 ALTER TABLE `issue_text_content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,7 +216,7 @@ CREATE TABLE `post` (
   `deleted_at` varchar(255) NOT NULL DEFAULT '',
   `updated_at` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,6 +225,7 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
+INSERT INTO `post` VALUES (1,1,1,'perolanegra',0,'2021-03-21 15:40:22','',''),(2,2,1,'perolanegra',0,'2021-03-21 15:44:48','',''),(3,3,1,'perolanegra',0,'2021-03-21 15:45:02','',''),(4,4,1,'perolanegra',0,'2021-03-21 15:45:05','',''),(5,5,1,'perolanegra',0,'2021-03-21 15:45:05','',''),(6,6,1,'perolanegra',0,'2021-03-21 15:45:06','',''),(7,7,1,'perolanegra',0,'2021-03-21 15:45:12','',''),(8,8,1,'perolanegra',0,'2021-03-21 15:54:14','',''),(9,9,1,'perolanegra',0,'2021-03-21 18:37:13','','');
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -323,7 +329,7 @@ CREATE TABLE `token` (
   `deleted_at` varchar(255) DEFAULT NULL,
   `updated_at` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -332,6 +338,7 @@ CREATE TABLE `token` (
 
 LOCK TABLES `token` WRITE;
 /*!40000 ALTER TABLE `token` DISABLE KEYS */;
+INSERT INTO `token` VALUES (1,1,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJwZXJvbGFuZWdyYSIsImlkX3JvbGUiOjIsIm5hbWUiOiJJZ29yIiwibGFzdE5hbWUiOiIiLCJzdGF0dXNNc2ciOiIiLCJkZGQiOiIiLCJwaG9uZSI6IiIsImVtYWlsIjoicGVkcmF0dG8zQGdtYWlsLmNvbSIsInBob3RvVVJMIjoiIiwiYmlydGhEYXRlIjoiIiwidHdpdHRlciI6IiIsImZhY2Vib29rIjoiIiwiaW5zdGFncmFtIjoiIiwic3RhcnMiOjAsImNyZWF0ZWRfYXQiOiIyMDIxLTAzLTIxVDE1OjIyOjQzLjAwMFoiLCJkZWxldGVkX2F0IjpudWxsLCJ1cGRhdGVkX2F0IjpudWxsLCJpYXQiOjE2MTYzNDAzNjMsImV4cCI6MTYxNjM2NTU2M30.ZVUt5Y1GX1-OQlKhO8Yi9MbthQVY1vu4e_du52gh-H0','2021-03-21 15:26:03',NULL,NULL),(2,1,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJwZXJvbGFuZWdyYSIsImlkX3JvbGUiOjIsIm5hbWUiOiJJZ29yIiwibGFzdE5hbWUiOiIiLCJzdGF0dXNNc2ciOiIiLCJkZGQiOiIiLCJwaG9uZSI6IiIsImVtYWlsIjoicGVkcmF0dG8zQGdtYWlsLmNvbSIsInBob3RvVVJMIjoiIiwiYmlydGhEYXRlIjoiIiwidHdpdHRlciI6IiIsImZhY2Vib29rIjoiIiwiaW5zdGFncmFtIjoiIiwic3RhcnMiOjAsImNyZWF0ZWRfYXQiOiIyMDIxLTAzLTIxVDE1OjIyOjQzLjAwMFoiLCJkZWxldGVkX2F0IjpudWxsLCJ1cGRhdGVkX2F0IjpudWxsLCJpYXQiOjE2MTY3OTg4NTQsImV4cCI6MTYxNjgyNDA1NH0.txtMS2YJDxHYsZukFQ2i0RYBl08nUz68uzrql0TG6dM','2021-03-26 22:47:34',NULL,NULL),(3,1,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJwZXJvbGFuZWdyYSIsImlkX3JvbGUiOjIsIm5hbWUiOiJJZ29yIiwibGFzdE5hbWUiOiIiLCJzdGF0dXNNc2ciOiIiLCJkZGQiOiIiLCJwaG9uZSI6IiIsImVtYWlsIjoicGVkcmF0dG8zQGdtYWlsLmNvbSIsInBob3RvVVJMIjoiIiwiYmlydGhEYXRlIjoiIiwidHdpdHRlciI6IiIsImZhY2Vib29rIjoiIiwiaW5zdGFncmFtIjoiIiwic3RhcnMiOjAsImNyZWF0ZWRfYXQiOiIyMDIxLTAzLTIxVDE1OjIyOjQzLjAwMFoiLCJkZWxldGVkX2F0IjpudWxsLCJ1cGRhdGVkX2F0IjpudWxsLCJpYXQiOjE2MTY4MDE3NDIsImV4cCI6MTYxNjgyNjk0Mn0.o4DNU6xGahBw2JZZKyNM9Uoq0aTN3MxUHA5VtwViq3U','2021-03-26 23:35:42',NULL,NULL),(4,1,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJwZXJvbGFuZWdyYSIsImlkX3JvbGUiOjIsIm5hbWUiOiJJZ29yIiwibGFzdE5hbWUiOiIiLCJzdGF0dXNNc2ciOiIiLCJkZGQiOiIiLCJwaG9uZSI6IiIsImVtYWlsIjoicGVkcmF0dG8zQGdtYWlsLmNvbSIsInBob3RvVVJMIjoiIiwiYmlydGhEYXRlIjoiIiwidHdpdHRlciI6IiIsImZhY2Vib29rIjoiIiwiaW5zdGFncmFtIjoiIiwic3RhcnMiOjAsImNyZWF0ZWRfYXQiOiIyMDIxLTAzLTIxVDE1OjIyOjQzLjAwMFoiLCJkZWxldGVkX2F0IjpudWxsLCJ1cGRhdGVkX2F0IjpudWxsLCJpYXQiOjE2MTY4NTM2NDcsImV4cCI6MTYxNjg3ODg0N30.8PjcSMJHdlGHF1fxuU6IzWv2k12DkXybrAjXD-ayURs','2021-03-27 14:00:47',NULL,NULL);
 /*!40000 ALTER TABLE `token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -363,7 +370,7 @@ CREATE TABLE `user` (
   `updated_at` varchar(255) DEFAULT NULL,
   `stars` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -372,6 +379,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'perolanegra','$2a$10$5Xu2AX8O5/0Pokn5lRlM1u38cOFR3tussvIdwraz3aFlbPC0bT266',2,'Igor','','','','','pedratto3@gmail.com','','','','','','2021-03-21 15:22:43',NULL,NULL,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -411,4 +419,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-20 14:05:49
+-- Dump completed on 2021-03-27 11:03:41
