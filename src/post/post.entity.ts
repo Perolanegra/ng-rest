@@ -9,13 +9,16 @@ export class Post {
     id_issue: number;
     
     @Column({ nullable: false })
-    id_author: Number;
+    id_author: number;
 
     @Column({ nullable: false })
     author: string;
 
-    @Column({ default: 0 })
-    stars: Number;
+    @Column({ nullable: false, default: 0 })
+    stars: number;
+
+    @Column({ nullable: false, default: 0 })
+    pplVoted: number;
 
     @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;

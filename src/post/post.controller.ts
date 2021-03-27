@@ -10,6 +10,13 @@ export class PostController {
   async addIssue(@Body('payload') payload: any) {
     return this.postService.add(payload);
   }
+
+  @Post('/store/stars')
+  async updateStars(@Request() req, @Body('payload') payload: any) {
+    return this.postService.updateStars(payload);
+  }
+
+  
  
 
 }

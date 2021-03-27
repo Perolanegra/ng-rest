@@ -132,7 +132,7 @@ export class NgRepository {
   //     .getOne();
   // }
 
-  public getById(payload: { entity: string; id: number }): Promise<{} | {}> {
+  public getById(payload: { entity: string; id: number }): Promise<any | {}> {
     this.logger.log(`Transaction: [GetById ${payload.entity}]`);
     return getConnection()
       .manager.getRepository(payload.entity)

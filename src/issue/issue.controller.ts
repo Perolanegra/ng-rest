@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Request, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Request, Param, Req } from '@nestjs/common';
 import { IssueService } from './issue.service';
 
 @Controller('issues')
@@ -11,19 +11,14 @@ export class IssueController {
   }
 
   @Get('/list')
-  async getAll() {
-    return this.issService.getAll();
+  async getAll(@Req() req: any) {
+    return this.issService.getAll(req.query.pagination);
   }
 
   @Post('/store')
   async addIssue(@Request() req, @Body('payload') payload: any) {
     payload.token = req.headers.authorization.slice(7);
     return this.issService.store(payload);
-  }
-
-  @Post('/store/stars')
-  async updateStars(@Request() req, @Body('payload') payload: any) {
-    return this.issService.updateStars(payload);
   }
 
   @Get('/detail/:id')

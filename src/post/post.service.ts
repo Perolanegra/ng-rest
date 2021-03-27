@@ -69,4 +69,11 @@ export class PostService {
 
     return postCountArr[0];
   }
+
+  async updateStars(payload: { id: number; values: { stars: number, pplVoted: number } }): Promise<any> {
+    const post: Post = await this.repository.getById({ entity: PostEntity, id: payload.id });
+    payload.values.stars = post.stars + payload.values.stars;
+    payload.values.pplVoted = post.pplVoted + 1;
+    return this.repository.update(PostEntity, payload, 'Erro ao votar.');
+  }
 }

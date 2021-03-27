@@ -1,14 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
-enum Stars {
-    ZERO = 0,
-    ONE = 1,
-    TWO = 2,
-    THREE = 3,
-    FOUR = 4,
-    FIVE = 5
-}
-
 @Entity()
 export class Issue {
     @PrimaryGeneratedColumn()
@@ -26,13 +17,7 @@ export class Issue {
     @Column({ nullable: false, type: 'varchar', length: 25 })
     author: string;
 
-    @Column({ nullable: false, default: Stars.ZERO })
-    stars: Number;
-
-    @Column({ nullable: false, default: Stars.ZERO })
-    pplVoted: Number;
-
-    @Column({ nullable: false, default: Stars.ZERO }) // setar +1 view por acc diff
+    @Column({ nullable: false, default: 0 }) // setar +1 view por acc diff
     views: Number;
 
     @Column({ nullable: false, default: '', type: 'varchar', length: 400 })
@@ -40,9 +25,6 @@ export class Issue {
 
     @Column({ nullable: false, default: '', type: 'varchar', length: 455 })
     tag_colors: string;
-
-    @Column({ nullable: false, default: 1 })
-    posts_number: Number;
 
     @Column({ nullable: false, default: false })
     typeSurveyContent: boolean;

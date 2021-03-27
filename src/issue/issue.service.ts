@@ -117,8 +117,25 @@ export class IssueService {
     });
   }
 
-  getAll(): Promise<Issue[]> {
-    return this.repository.getAll(IssueEntity); // TODO: por o paginate por 15, kda request.
+  async getAll(pagination: string): Promise<Issue[]> {
+    const features = SQL.issue.features as Array<any>;
+    const sql = features.find(feature => feature['paginate']);
+    
+    const details = await this.repository.getByGivenQuery({
+      entity: IssueEntity,
+      errorMsg: 'Erro ao recuperar os detalhes dos Issues. Tente novamente.',
+      sql: (sql['paginate'] as string).concat(` ${+pagination > 15 ? 15 : +pagination}`),
+    });
+
+    if (!details.length) {
+      throw new NgException(
+        InternalServerErrorException,
+        'Os Issues não foram carregados. Por favor, Recarregue e tente novamente.',
+        'Erro Inesperado',
+      ).exception;
+    }
+
+    return details;
   }
 
   private async storePoll(
@@ -154,10 +171,6 @@ export class IssueService {
     textContent.id_issue = id_storedIssue;
 
     return this.issueTextContentService.store(textContent);
-  }
-
-  async updateStars(payload: { id: number; values }): Promise<any> {
-    return this.repository.update(IssueEntity, payload, 'Erro ao votar.');
   }
 
   async getDetailsById(payload: { id: number }): Promise<any | undefined> {
