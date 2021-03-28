@@ -1,3 +1,4 @@
+import { IssueViewsModule } from './issue-views/issue-views.module';
 import { UserTitlesModule } from './user-titles/user-titles.module';
 import { TitlesModule } from './titles/titles.module';
 import { RolesModule } from './roles/roles.module';
@@ -71,6 +72,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     RolesModule,
     TitlesModule,
     UserTitlesModule,
+    IssueViewsModule,
   ],
   providers: [
     AppService,

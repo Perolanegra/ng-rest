@@ -17,9 +17,6 @@ export class Issue {
     @Column({ nullable: false, type: 'varchar', length: 25 })
     author: string;
 
-    @Column({ nullable: false, default: 0 }) // setar +1 view por acc diff
-    views: Number;
-
     @Column({ nullable: false, default: '', type: 'varchar', length: 400 })
     tags: string;
 

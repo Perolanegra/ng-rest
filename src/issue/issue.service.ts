@@ -19,6 +19,7 @@ import { IssueTextContent } from 'src/issue-text-content/issue-text-content.enti
 import { NgException } from 'src/core/exception/ng-exception';
 // @ts-ignore
 import * as SQL from 'assets/sql/sql.json';
+import { IssueViewsService } from 'src/issue-views/issue-views.service';
 
 const IssueEntity: string = 'Issue';
 @Injectable()
@@ -32,6 +33,7 @@ export class IssueService {
     private issuePollService: IssuePollService,
     private issuePollResponseService: IssuePollResponseService,
     private issueTextContentService: IssueTextContentService,
+    private issueViewsService: IssueViewsService,
     private repository: NgRepository,
   ) {}
 
@@ -120,18 +122,20 @@ export class IssueService {
   async getAll(pagination: string): Promise<Issue[]> {
     const features = SQL.issue.features as Array<any>;
     const sql = features.find(feature => feature['paginate']);
-    
+
     const details = await this.repository.getByGivenQuery({
       entity: IssueEntity,
       errorMsg: 'Erro ao recuperar os detalhes dos Issues. Tente novamente.',
-      sql: (sql['paginate'] as string).concat(` ${+pagination > 15 ? 15 : +pagination}`),
+      sql: (sql['paginate'] as string).concat(
+        ` ${+pagination > 15 ? 15 : +pagination}`,
+      ),
     });
 
     if (!details.length) {
       throw new NgException(
         InternalServerErrorException,
-        'Os Issues não foram carregados. Por favor, Recarregue e tente novamente.',
-        'Erro Inesperado',
+        'Não Existem Issues Cadastrados. Por favor, Cadastre um Issue e tente novamente.',
+        'Cadastre um Issue',
       ).exception;
     }
 
@@ -268,5 +272,18 @@ export class IssueService {
       .select('*')
       .where('1=1 order by created_at ASC ')
       .getMany();
+  }
+
+  async validateAndMarkView(
+    payload: {
+      id_issue: number;
+      id_user: number;
+    },
+    token: string,
+  ): Promise<any | undefined> {
+    const resultSetToken = await this.tokenService.findByToken(token);
+    const { id_user } = resultSetToken;
+    payload.id_user = id_user;
+    return this.issueViewsService.store(payload);
   }
 }

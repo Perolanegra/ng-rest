@@ -13,6 +13,7 @@ import { Token } from 'src/token/token.entity';
 import { IssuePollService } from 'src/issue-poll/issue-poll.service';
 import { IssuePollResponseService } from 'src/issue-poll-response/issue-poll-response.service';
 import { IssueTextContentService } from 'src/issue-text-content/issue-text-content.service';
+import { IssueViewsService } from 'src/issue-views/issue-views.service';
 
 @Module({
   providers: [
@@ -23,7 +24,8 @@ import { IssueTextContentService } from 'src/issue-text-content/issue-text-conte
     PostService,
     IssuePollService,
     IssuePollResponseService,
-    IssueTextContentService
+    IssueTextContentService,
+    IssueViewsService
   ],
   exports: [IssueService, TypeOrmModule],
   controllers: [IssueController],

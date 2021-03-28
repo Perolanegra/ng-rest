@@ -33,6 +33,13 @@ export class IssueController {
     return this.issService.getPollDetailById({ id: parsedId });
   }
 
+
+  @Post('/views/mark')
+  async markView(@Request() req, @Body('payload') payload: any) {
+    payload.token = req.headers.authorization.slice(7);
+    return this.issService.validateAndMarkView(payload, payload.token);
+  }
+
   // @Delete('issues/delete')
   // async delete() {
   //   this.issService.deleteAll();
