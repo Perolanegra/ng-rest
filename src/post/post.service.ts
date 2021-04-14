@@ -51,12 +51,14 @@ export class PostService {
     id_author: string;
   }): Promise<{ user_post_number: string } | undefined> {
     const features = SQL.post.features as Array<any>;
-    const sql = features.find(feature => feature['getCountByIdAuthor']);   
+    const sql = features.find(feature => feature['getCountByIdAuthor']);
 
     const postCountArr = await this.repository.getByGivenQuery({
       entity: PostEntity,
       errorMsg: 'Erro ao recuperar o seu número de postagens. Tente novamente.',
-      sql: (sql['getCountByIdAuthor'] as string).concat(` ${payload.id_author}`),
+      sql: (sql['getCountByIdAuthor'] as string).concat(
+        ` ${payload.id_author}`,
+      ),
     });
 
     if (!postCountArr.length) {
@@ -70,10 +72,19 @@ export class PostService {
     return postCountArr[0];
   }
 
-  async updateStars(payload: { id: number; values: { stars: number, pplVoted: number } }): Promise<any> {
-    const post: Post = await this.repository.getById({ entity: PostEntity, id: payload.id });
+  async updateStars(payload: {
+    id: number;
+    id_issue: number;
+    id_author: number;
+    values: { stars: number; pplVoted: number };
+  }): Promise<any> {
+    const post: Post = await this.repository.getById({
+      entity: PostEntity,
+      id: payload.id,
+    });
     payload.values.stars = post.stars + payload.values.stars;
     payload.values.pplVoted = post.pplVoted + 1;
+    // tem que enviar o nick do author também
     return this.repository.update(PostEntity, payload, 'Erro ao votar.');
   }
 }

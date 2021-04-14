@@ -284,6 +284,13 @@ export class IssueService {
     const resultSetToken = await this.tokenService.findByToken(token);
     const { id_user } = resultSetToken;
     payload.id_user = id_user;
+
+    const issueViewStored = await this.issueViewsService.getById(payload)
+
+    if(issueViewStored) {
+      return;
+    }
+
     return this.issueViewsService.store(payload);
   }
 }

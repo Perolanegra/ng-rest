@@ -1,5 +1,5 @@
 
-import { Controller, Post, Body, Request, Get, Param, Req, } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { PostService } from './post.service';
 
 @Controller('post')
@@ -12,11 +12,8 @@ export class PostController {
   }
 
   @Post('/store/stars')
-  async updateStars(@Request() req, @Body('payload') payload: any) {
+  async updateStars(@Body('payload') payload: any) {
     return this.postService.updateStars(payload);
   }
-
-  
- 
 
 }
