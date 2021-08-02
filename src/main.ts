@@ -13,7 +13,7 @@ async function bootstrap() {
   app.use(helmet());
 
   const options = {
-    origin: 'https://www.ng-forum.com/',
+    origin: 'http://ng-forum-webview.herokuapp.com/',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: true,
     optionsSuccessStatus: 200,
