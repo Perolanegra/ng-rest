@@ -9,7 +9,7 @@ export class NgMailerService {
         return this.mailerService.sendMail(
             {
                 to: payload.email,
-                from: 'ngba@devbaiano.com',
+                from: 'pedratto3@gmail.com',
                 subject: 'Recuperação credenciais ng-forum',
                 template: 'index',
                 context: { url: payload.url }  // id_user

@@ -7,14 +7,20 @@ export class Post {
 
     @Column({ nullable: false })
     id_issue: number;
-
-    @Column({ nullable: false, type: 'text' })
-    context: string;
+    
+    @Column({ nullable: false })
+    id_author: number;
 
     @Column({ nullable: false })
-    id_author: Number;
+    author: string;
 
-   @Column({ type: 'timestamp', default: () => "current_timestamp" })
+    @Column({ nullable: false, default: 0 })
+    stars: number;
+
+    @Column({ nullable: false, default: 0 })
+    pplVoted: number;
+
+    @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;
 
     @Column({ default: '' })

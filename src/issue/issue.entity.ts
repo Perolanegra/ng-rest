@@ -9,7 +9,7 @@ enum Stars {
 }
 
 @Entity()
-export class Issues {
+export class Issue {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -25,21 +25,21 @@ export class Issues {
     @Column({ nullable: false, type: 'varchar', length: 25 })
     author: string;
 
-    @Column("enum", { enum: Stars })
-    stars: Stars;
-
-    @Column({ nullable: false, default: 0 }) // setar +1 view por acc diff
-    views: Number;
-
-    @Column({ nullable: false, default: '', type: 'varchar', length: 40 })
+    @Column({ nullable: false, default: '', type: 'varchar', length: 400 })
     tags: string;
+
+    @Column({ nullable: false, default: '', type: 'varchar', length: 455 })
+    tag_colors: string;
+
+    @Column({ nullable: false, default: false })
+    typeSurveyContent: boolean;
 
     @Column({ type: 'timestamp', default: () => "current_timestamp" })
     created_at: Timestamp;
 
-    @Column({ default: '' })
+    @Column({ default: null })
     deleted_at: string;
 
-    @Column({ default: '' })
+    @Column({ default: null })
     updated_at: string;
 }
