@@ -25,7 +25,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     AccountModule,
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 7,
+      limit: 15,
     }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
