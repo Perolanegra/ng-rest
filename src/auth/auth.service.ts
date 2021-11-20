@@ -74,6 +74,8 @@ export class AuthService {
 
   async sendCredentialsEmail(payload) {
     try {
+      console.log('payload antes: ', payload);
+      
       const user = await this.usersService.findByUsernameOrEmail(payload);
 
       if (!user) {
@@ -113,6 +115,13 @@ export class AuthService {
         statusCode: HttpStatus.CREATED,
       }).response;
     } catch (error) {
+      if(error?.responseCode === 535) {
+        throw new NgException(
+          InternalServerErrorException,
+          'E-mail não enviado. Recarregue e tente novamente.',
+          'Operação Indisponível',
+        ).exception;
+      }
       throw error;
     }
   }
